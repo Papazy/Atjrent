@@ -172,7 +172,7 @@
 </div>
 
 {{-- modal2 --}}
-<div class="modal fade" id="formKeranjang" tabindex="-1" aria-labelledby="formPopupLabel" aria-hidden="true">
+<div class="modal fade" id="formKeranjang" tabindex="-1" aria-labelledby="formPopupLabel" aria-hidden="false">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -400,6 +400,10 @@
           // Cek apakah URL memiliki query parameter tertentu
           const urlParams = new URLSearchParams(window.location.search);
           const queryParam = urlParams.get('category'); // Misalnya kita cek query parameter 'keranjang'
+
+          const popupKeranjang = $('#popupKeranjang');
+  const formKeranjang = $('#formKeranjang');
+
 
           // Jika ada query parameter 'keranjang', jangan tampilkan modal
           if (!queryParam) {
