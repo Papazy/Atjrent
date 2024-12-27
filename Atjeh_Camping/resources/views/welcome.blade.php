@@ -305,20 +305,20 @@ display: none;
           </div>
           <div class="col bg-warning">
             <div class="box-image">
-                <img style="" src="{{ url('') }}/asset/img/tas.jpeg"  />
+                <img style="" src="{{ env('APP_ASSET') }}/asset/img/tas.jpeg"  />
               </div>
           </div>
           <div class="col bg-warning">
             <div class="box-image2 " >
-                <img style="" src="{{ url('') }}/asset/img/Nesting.jpeg" class="img-fluid rounded mb-4" />
+                <img style="" src="{{ env('APP_ASSET') }}/asset/img/Nesting.jpeg" class="img-fluid rounded mb-4" />
               </div>
               <div class="box-image2 " >
-                <img style="" src="{{ url('') }}/asset/img/Senter.jpeg" class="img-fluid rounded mb-5" />
+                <img style="" src="{{ env('APP_ASSET') }}/asset/img/Senter.jpeg" class="img-fluid rounded mb-5" />
               </div>
           </div>
           <div class="col">
             <div class="box-image">
-                <img style="" src="{{ url('') }}/asset/img/tenda ukuran 6.jpeg" />
+                <img style="" src="{{ env('APP_ASSET') }}/asset/img/tenda ukuran 6.jpeg" />
               </div>
           </div>
         </div>

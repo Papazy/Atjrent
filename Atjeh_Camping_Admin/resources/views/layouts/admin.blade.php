@@ -22,7 +22,7 @@
     <!-- Fonts -->
     <script src="https://kit.fontawesome.com/b69e31cf66.js" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-    
+
     <!-- Styles -->
     <link href="{{ url('css/sb-admin-2.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ url('vendor/toastr/toastr.min.css') }}">
@@ -58,7 +58,7 @@
                 <i class="fas fa-home fa-sm" ></i>
                 <span>Dashboard</span></a>
         </li>
-        
+
         <li class="nav-item ">
             <a class="nav-link pb-2" href="{{ url('/profile') }}">
                 <i class="fas fa-fw fa-user"></i>
@@ -137,7 +137,7 @@
               <ul class="navbar-nav ml-auto">
 
                   <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-                  
+
 
                   <div class="topbar-divider d-none d-sm-block"></div>
 
