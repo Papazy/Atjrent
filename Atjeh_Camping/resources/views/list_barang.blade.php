@@ -53,15 +53,32 @@
       <div class="card p-4">
         <div class="card-header">Camp To Seulawah</div>
         <div class="card-body">
-          <div class="d-flex justify-content-between mb-3">
-            <span class="text-muted">Total Pesanan</span>
-
             @php
-            $totalHarga = $barangs->sum(function ($item) {
-            return $item->barang->harga * $item->stok_barang;
-            });
-            @endphp
+            use Carbon\Carbon;
 
+            // Mendapatkan selisih hari dari $item->tanggal_mulai dan $item->tanggal_selesai
+            $totalHari = Carbon::parse($tanggal_mulai)->diffInDays(Carbon::parse($tanggal_selesai)) + 1; // Tambahkan 1 jika ingin inklusif (termasuk tanggal mulai dan selesai));
+            $jumlahHarga = $barangs->sum(function ($item) {
+                return $item->barang->harga * $item->stok_barang;
+            });
+            $totalHarga = $jumlahHarga * $totalHari;
+            @endphp
+            <div class="d-flex justify-content-between mb-1" >
+            <span class="text-muted">Harga</span>
+            <div>
+                Rp.
+                <span id="jumlah_harga">{{ number_format($jumlahHarga, 0, ",", ".") }}</span>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between mb-1" >
+            <span class="text-muted">Lama sewa</span>
+            <div>
+                <span id="jumlah_hari">{{ number_format($totalHari, 0, ",", ".") }} hari</span>
+            </div>
+        </div>
+        <hr />
+        <div class="d-flex justify-content-between mb-3">
+            <span class="text-muted">Total Harga</span>
             <div>
               Rp.
               <span id="total-pesanan">{{ number_format($totalHarga, 0, ",", ".") }}</span>
@@ -231,14 +248,26 @@
 
         // Handle on change Alamat
 
+        const pickupOption = document.getElementById('pickupOption');
         const deliveryOption = document.getElementById('deliveryOption');
         const kabupatenDropdown = document.getElementById('kabupatenDropdown');
 
+        pickupOption.addEventListener('change', function() {
+          if (this.checked) {
+            kabupatenDropdown.style.display = 'none';
+            let totalHarga = {{ $totalHarga }}
+            document.getElementById('total-payment').innerHTML = totalHarga.toLocaleString('id-ID');
+          } else {
+            kabupatenDropdown.style.display = 'block';
+          }
+        });
         deliveryOption.addEventListener('change', function() {
           if (this.checked) {
             kabupatenDropdown.style.display = 'block';
           } else {
             kabupatenDropdown.style.display = 'none';
+            let totalHarga = {{ $totalHarga }}
+            document.getElementById('total-payment').innerHTML = totalHarga.toLocaleString('id-ID');
           }
         });
       });
@@ -246,7 +275,7 @@
 
       // delete
 
-      function handleDelete(button){
+      function handleDelete(button) {
         let dataId = $(button).data('id'); // Ambil ID data dari atribut tombol
         let keranjangId = $(button).data('cart-id'); // Ambil ID data dari atribut tombol
         console.log(keranjangId);
@@ -255,59 +284,59 @@
         // console.log(ok);
 
         Swal.fire({
-            icon: 'warning',
-            title: 'Apakah Kamu Yakin?',
-            text: "Ingin menghapus data ini!",
-            showCancelButton: true,
-            cancelButtonText: 'TIDAK',
-            confirmButtonText: 'YA, HAPUS!'
+          icon: 'warning'
+          , title: 'Apakah Kamu Yakin?'
+          , text: "Ingin menghapus data ini!"
+          , showCancelButton: true
+          , cancelButtonText: 'TIDAK'
+          , confirmButtonText: 'YA, HAPUS!'
         }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: `/list_barang/destroy/${dataId}`, // Sesuaikan URL dengan route
-                    type: "DELETE",
-                    data: {
-                        _token: token // Kirimkan CSRF token
-                    },
-                    success: function (response) {
-                        if (response.status === 'success') {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil!',
-                                text: response.message,
-                                showConfirmButton: false,
-                                timer: 3000
-                            });
+          if (result.isConfirmed) {
+            $.ajax({
+              url: `/list_barang/destroy/${dataId}`, // Sesuaikan URL dengan route
+              type: "DELETE"
+              , data: {
+                _token: token // Kirimkan CSRF token
+              }
+              , success: function(response) {
+                if (response.status === 'success') {
+                  Swal.fire({
+                    icon: 'success'
+                    , title: 'Berhasil!'
+                    , text: response.message
+                    , showConfirmButton: false
+                    , timer: 3000
+                  });
 
-                            // Hapus baris dari tabel
-                            $(`button[data-id="${dataId}"]`).closest('tr').remove();
+                  // Hapus baris dari tabel
+                  $(`button[data-id="${dataId}"]`).closest('tr').remove();
 
-                            // merefresh halaman
-                            location.reload();
+                  // merefresh halaman
+                  location.reload();
 
 
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal!',
-                                text: response.message,
-                                showConfirmButton: false,
-                                timer: 3000
-                            });
-                        }
-                    },
-                    error: function (xhresponse) {
-                        console.log(xhresponse.responseText);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error!',
-                            text: 'Terjadi kesalahan saat menghapus data!',
-                            showConfirmButton: false,
-                            timer: 3000
-                        });
-                    }
+                } else {
+                  Swal.fire({
+                    icon: 'error'
+                    , title: 'Gagal!'
+                    , text: response.message
+                    , showConfirmButton: false
+                    , timer: 3000
+                  });
+                }
+              }
+              , error: function(xhresponse) {
+                console.log(xhresponse.responseText);
+                Swal.fire({
+                  icon: 'error'
+                  , title: 'Error!'
+                  , text: 'Terjadi kesalahan saat menghapus data!'
+                  , showConfirmButton: false
+                  , timer: 3000
                 });
-            }
+              }
+            });
+          }
         });
       }
 
@@ -364,7 +393,7 @@
       //                 }
       //             });
       //         }
-        //   });
-    //   });
+      //   });
+      //   });
 
     </script>

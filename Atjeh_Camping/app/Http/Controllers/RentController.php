@@ -54,8 +54,10 @@ class RentController extends Controller
     {
         $rent = Rent::findOrFail($id);
         $barangs = Rent_detail::where('rents_id', $rent->id)->get();
+        $tanggal_mulai = $rent->tanggal_mulai;
+        $tanggal_selesai = $rent->tanggal_selesai;
         $keranjang_id = $id;
-        return view('list_barang', compact(['barangs', 'keranjang_id']));
+        return view('list_barang', compact(['barangs', 'keranjang_id', 'tanggal_mulai', 'tanggal_selesai']));
     }
 
     // Fungsi untuk menyimpan data keranjang
