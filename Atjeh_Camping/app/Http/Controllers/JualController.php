@@ -9,10 +9,35 @@ use Illuminate\Support\Facades\Validator;
 
 
 class JualController extends Controller
-{    function index() {
+{    function index(Request $request) {
 
-        $datajual = Barang::where('is_jual', 'Jual')->latest()->get();
-        return view('sale',compact('datajual'));
+          // Ambil query parameter dari filter
+          $category = $request->input('category'); // Filter kategori
+          $minPrice = $request->input('min_price'); // Filter harga minimum
+          $maxPrice = $request->input('max_price'); // Filter harga maksimum
+
+          // Query dasar untuk barang yang disewa
+          $query = Barang::where('is_jual', 'Jual');
+
+          // Filter berdasarkan kategori jika ada
+          if ($category && $category != 'all') {
+              $query->where('kategori', $category);
+          }
+
+          // Filter berdasarkan harga minimum jika ada
+          if ($minPrice) {
+              $query->where('harga', '>=', $minPrice);
+          }
+
+          // Filter berdasarkan harga maksimum jika ada
+          if ($maxPrice) {
+              $query->where('harga', '<=', $maxPrice);
+          }
+
+          // Ambil data yang sudah difilter
+          $data = $query->latest()->get();
+
+        return view('sale',compact('data'));
     }
     function keranjangjual() {
         $keranjangjual = Jual::where('users_id', Auth::user()->id)->latest()->get();
@@ -21,8 +46,8 @@ class JualController extends Controller
 
     public function store(Request $request)
     {
-   
-   
+
+
         // Validasi input
         $validated = Validator::make( $request->all(), [
             'nama' => 'required',
@@ -30,11 +55,11 @@ class JualController extends Controller
             'stok_barang' => 'required',
             'status' => 'required',
         ]);
-   
+
         if ($validated->fails()) {
            return response()->json($validated->errors(), 422);
        }
-   
+
         // Simpan data ke tabel keranjang
         Jual::create([
            'users_id' => Auth::user()->id,
@@ -43,7 +68,7 @@ class JualController extends Controller
            'stok_barang' => $request ->stok_barang,
            'status' => 'pending',
         ]);
-   
+
         // Kirimkan respon JSON
        //  return response()->json(['success' => true, 'message' => 'Data keranjang berhasil disimpan!']);
         return response()->json([
@@ -73,7 +98,7 @@ class JualController extends Controller
             'stok' => 'required|numeric',
             'image' => 'required|string',
         ]);
-    
+
         // Simpan data ke session atau database
         $cart = session()->get('cart', []);
         $cart[$validated['id']] = [
@@ -84,19 +109,69 @@ class JualController extends Controller
             'quantity' => isset($cart[$validated['id']]) ? $cart[$validated['id']]['quantity'] + 1 : 1,
         ];
         session()->put('cart', $cart);
-    
+
         return response()->json(['success' => true]);
     }
-    
+
+    public function addToBuy(Request $request)
+    {
+        // Validasi data yang diterima
+        $validated = $request->validate([
+            'id' => 'required|integer',
+            'jumlah' => 'required|numeric',
+        ]);
+
+        $barang = Barang::findOrFail($validated['id']);
+        // mendapatkan harga
+        $harga = $barang->harga * $validated['jumlah'];
+
+        // Simpan data ke dalam jual
+        Jual::create([
+            'users_id' => Auth::user()->id,
+            'barangs_id' => $validated['id'],
+            'harga_total' => $harga,
+            'stok_barang' => $validated['jumlah'],
+            'status' => 'pending',
+            'snap_token' => 'tes',
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+
     public function viewCart()
     {
-        $cart = session()->get('cart', []);
+        // mendapatkan belanja user dari database
+        $cart = Jual::with('barang')->where('users_id', Auth::user()->id)->get();
         return view('detail_belanja', compact('cart'));
     }
-    
+
+    public function destroy($id)
+    {
+
+        try {
+            // Cari data berdasarkan ID
+            $rentDetail = Jual::findOrFail($id);
+
+            // Hapus data
+            $rentDetail->delete();
+
+            // Berikan respon berhasil
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data berhasil dihapus!',
+            ]);
+        } catch (\Exception $e) {
+            // Jika terjadi error, tangani di sini
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal menghapus data!',
+            ], 500);
+        }
+    }
 
 
-    
+
+
 
 
 }

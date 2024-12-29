@@ -20,6 +20,7 @@ Route::middleware('auth')->group(function () {
 
 
 Route::get('/sale', [JualController::class, 'index']);
+Route::post('/add-to-buy', [JualController::class, 'addToBuy'])->name('add.to.buy');
 Route::post('/add-to-cart', [JualController::class, 'addToCart'])->name('add.to.cart');
 Route::get('/cart', [JualController::class, 'viewCart'])->name('cart.detail');
 
@@ -37,6 +38,7 @@ Route::get('/list_barang', function () {
     return view('list_barang');
 });
 Route::delete('/list_barang/destroy/{id}', [RentController::class, 'destroy'])->name('rent.destroy');
+Route::delete('/detail_belanja/destroy/{id}', [JualController::class, 'destroy'])->name('jual.destroy');
 
 Route::get('/detail_belanja', [JualController::class, 'viewCart'])->name('detail_belanja');
 

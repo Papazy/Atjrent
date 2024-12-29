@@ -53,31 +53,31 @@
       <div class="card p-4">
         <div class="card-header">Camp To Seulawah</div>
         <div class="card-body">
-            @php
-            use Carbon\Carbon;
+          @php
+          use Carbon\Carbon;
 
-            // Mendapatkan selisih hari dari $item->tanggal_mulai dan $item->tanggal_selesai
-            $totalHari = Carbon::parse($tanggal_mulai)->diffInDays(Carbon::parse($tanggal_selesai)) + 1; // Tambahkan 1 jika ingin inklusif (termasuk tanggal mulai dan selesai));
-            $jumlahHarga = $barangs->sum(function ($item) {
-                return $item->barang->harga * $item->stok_barang;
-            });
-            $totalHarga = $jumlahHarga * $totalHari;
-            @endphp
-            <div class="d-flex justify-content-between mb-1" >
+          // Mendapatkan selisih hari dari $item->tanggal_mulai dan $item->tanggal_selesai
+          $totalHari = Carbon::parse($tanggal_mulai)->diffInDays(Carbon::parse($tanggal_selesai)) + 1; // Tambahkan 1 jika ingin inklusif (termasuk tanggal mulai dan selesai));
+          $jumlahHarga = $barangs->sum(function ($item) {
+          return $item->barang->harga * $item->stok_barang;
+          });
+          $totalHarga = $jumlahHarga * $totalHari;
+          @endphp
+          <div class="d-flex justify-content-between mb-1">
             <span class="text-muted">Harga</span>
             <div>
-                Rp.
-                <span id="jumlah_harga">{{ number_format($jumlahHarga, 0, ",", ".") }}</span>
+              Rp.
+              <span id="jumlah_harga">{{ number_format($jumlahHarga, 0, ",", ".") }}</span>
             </div>
-        </div>
-        <div class="d-flex justify-content-between mb-1" >
+          </div>
+          <div class="d-flex justify-content-between mb-1">
             <span class="text-muted">Lama sewa</span>
             <div>
-                <span id="jumlah_hari">{{ number_format($totalHari, 0, ",", ".") }} hari</span>
+              <span id="jumlah_hari">{{ number_format($totalHari, 0, ",", ".") }} hari</span>
             </div>
-        </div>
-        <hr />
-        <div class="d-flex justify-content-between mb-3">
+          </div>
+          <hr />
+          <div class="d-flex justify-content-between mb-3">
             <span class="text-muted">Total Harga</span>
             <div>
               Rp.
@@ -247,7 +247,6 @@
 
 
         // Handle on change Alamat
-
         const pickupOption = document.getElementById('pickupOption');
         const deliveryOption = document.getElementById('deliveryOption');
         const kabupatenDropdown = document.getElementById('kabupatenDropdown');
@@ -255,7 +254,11 @@
         pickupOption.addEventListener('change', function() {
           if (this.checked) {
             kabupatenDropdown.style.display = 'none';
-            let totalHarga = {{ $totalHarga }}
+            let totalHarga = {
+              {
+                $totalHarga
+              }
+            }
             document.getElementById('total-payment').innerHTML = totalHarga.toLocaleString('id-ID');
           } else {
             kabupatenDropdown.style.display = 'block';
@@ -266,7 +269,11 @@
             kabupatenDropdown.style.display = 'block';
           } else {
             kabupatenDropdown.style.display = 'none';
-            let totalHarga = {{ $totalHarga }}
+            let totalHarga = {
+              {
+                $totalHarga
+              }
+            }
             document.getElementById('total-payment').innerHTML = totalHarga.toLocaleString('id-ID');
           }
         });
