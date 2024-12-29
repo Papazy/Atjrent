@@ -96,11 +96,12 @@
           </div>
           @endforeach
         </div>
-      </div>
-
     </div>
-  </div>
-  <footer class="bg-dark text-light py-4 ">
+
+</div>
+</div>
+</div>
+  <footer class="bg-dark text-light py-4 mt-4"/>
     <div class="container">
       <div class="row">
         <!-- About Section -->
@@ -134,7 +135,6 @@
       </div>
     </div>
   </footer>
-</div>
 
 
 
