@@ -159,17 +159,7 @@
               </div>
             </div>
             <hr />
-            <!-- Upload KTP Section -->
-            <div class="mb-3">
-              <label for="uploadKtp" class="form-label">Unggah Foto KTP:</label>
-              <input
-                type="file"
-                class="form-control"
-                id="uploadKtp"
-                accept="image/*"
-              />
-              {{-- <small class="form-text text-muted">Unggah foto KTP Anda dalam format JPG, PNG, atau JPEG.</small> --}}
-            </div>
+
             <hr />
             <div class="d-flex justify-content-between mb-3">
               <span class="total-payment">Total Pembayaran</span>
