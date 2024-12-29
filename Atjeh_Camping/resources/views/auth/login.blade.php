@@ -17,19 +17,20 @@
 <form method="POST" action="{{ route('login') }}">
 @csrf
     <div class="input-group mb-4">
-        <input type="email" name="email" 
-               class="form-control form-control-lg bg-light fs-6" 
+        <input type="email" name="email"
+               class="form-control form-control-lg bg-light fs-6"
                placeholder="Email">
    </div>
-   
+
    <div class="input-group mb-2">
-        <input type="password" name="password" 
-               class="form-control form-control-lg bg-light fs-6" 
+        <input type="password" name="password"
+               class="form-control form-control-lg bg-light fs-6"
                placeholder="Password">
    </div>
    <div class="input-group mb-5 d-flex justify-content-between "></div>
                <div class="input-group mb-2 ">
                      <button class="btn btn-lg btn-warning w-100 shadow fs-6">Sign In</button>
                </div>
+               <p>Don't have an account yet? <a href="/register">Register</a></p>
 </form>
 @endsection

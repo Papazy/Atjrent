@@ -5,6 +5,8 @@ use App\Http\Controllers\JualController;
 use App\Http\Controllers\RentController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\ProfileController;
+
 require __DIR__.'/auth.php';
 
 // Route::get('/', [WelcomeController::class, 'index']);
@@ -48,7 +50,7 @@ Route::get('/riwayat', function () {
     return view('riwayat');
 });
 
-
+Route::put('/profile', [ProfileController::class, 'updateProfile'])->name('profile.update');
 // HHari ini
 
 Route::post('/payment/{amount}', [PaymentController::class, 'processPayment']);
