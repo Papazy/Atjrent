@@ -47,3 +47,6 @@ Route::get('/transaksi/sewa/{id}', [SewaController::class, 'detail'])->name('sew
 Route::auto('/transaksi/sewa', SewaController::class);
 Route::auto('/keranjang/keranjangsewa', DetailkeranjangsewaController::class);
 
+Route::post('/transaksi/sewa/{id}/status/{status}', [SewaController::class, 'updateStatus']);
+
+

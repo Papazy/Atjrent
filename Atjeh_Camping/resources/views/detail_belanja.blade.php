@@ -161,11 +161,12 @@
     document.addEventListener('DOMContentLoaded', function() {
 
 
-      // Handle change total price
-
-      const kabupatenSelect = document.getElementById('kabupaten');
-      kabupatenSelect.addEventListener('change', function() {
-        const selectedOption = kabupatenSelect.options[kabupatenSelect.selectedIndex];
+        // Handle change total price
+        const sumTotal = document.getElementById('total-payment-only').textContent.replaceAll('.', '').replaceAll('Rp', '');
+        localStorage.setItem('totalPayment', sumTotal);
+        const kabupatenSelect = document.getElementById('kabupaten');
+        kabupatenSelect.addEventListener('change', function() {
+            const selectedOption = kabupatenSelect.options[kabupatenSelect.selectedIndex];
         if (selectedOption) {
           let totalPesanan = document.getElementById('total-payment-only').textContent.replaceAll('.', '').replaceAll('Rp', '');
           const sumTotal = parseInt(selectedOption.getAttribute('data-amount')) + parseInt(totalPesanan);
@@ -180,14 +181,15 @@
       payButton.addEventListener('click', function() {
         // const totalPayment = document.getElementById('total-payment').textContent.replaceAll('.','');
         const totalPayment = localStorage.getItem('totalPayment')
-        fetch('/payment/' + totalPayment, {
+        fetch('/payment/jual/' + totalPayment, {
             method: 'POST'
             , headers: {
               'X-CSRF-TOKEN': '{{ csrf_token() }}'
               , 'Content-Type': 'application/json'
             , }
             , body: JSON.stringify({
-              amount: totalPayment
+              amount: totalPayment,
+              rent_id: {{ $cart[0]->id }}
             , })
           })
           .then(response => response.json())

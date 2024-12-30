@@ -1,10 +1,34 @@
 @extends('layouts.admin')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 @push('css')
 <!-- Custom styles for this page -->
 <link href="{{ url('') }}/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @endpush
+
+<style>
+    .status-message {
+    font-size: 14px;
+    margin-top: 5px;
+    color: white;
+    opacity: 0; /* Awalnya tidak terlihat */
+    transition: opacity 0.5s ease-in-out; /* Animasi transisi */
+    background-color: green;
+    position: fixed;
+    padding: 10px;
+    border-radius: 5px;
+    right: 0;
+    bottom: 0;
+    margin-right: 20px;
+    margin-bottom: 40px;
+    z-index: 9999;
+}
+
+.status-message.show {
+    opacity: 1; /* Terlihat sepenuhnya */
+}
+</style>
 
 @section('main-content')
 <!-- Page Heading -->
@@ -15,6 +39,23 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="font-weight-bold text-primary">Informasi Transaksi</h6>
+                {{-- Button telah dikembalikan atau belum --}}
+                @if(strtolower($rent->status) == 'dikembalikan')
+                <button
+                    class="btn btn-success float-right change-status"
+                    data-id="{{ $rent->id }}"
+                    data-status="terbayar">
+                    <i class="fas fa-check" id="iconStatus"></i> Telah Dikembalikan
+                </button>
+            @elseif(strtolower($rent->status) == 'terbayar')
+                <button
+                    class="btn btn-danger float-right change-status"
+                    data-id="{{ $rent->id }}"
+                    data-status="dikembalikan">
+                    <i class="fas fa-times" id="iconStatus"></i> Belum Dikembalikan
+                </button>
+            @endif
+            <div id="status-message-{{ $rent->id }}" class="status-message"></div> <!-- Tempat untuk menampilkan pesan -->
             </div>
             <div class="card-body">
                 @if($rent->barangs->count() > 0)
@@ -47,13 +88,20 @@
                             </tr>
                             <tr>
                                 <td><strong>Status</strong></td>
-                                <td>: {{ ucfirst($rent->status) }}</td>
+                                <td id="status">: {{ ucfirst($rent->status) }}</td>
                             </tr>
                         </table>
                     </div>
                     <div class="col-md-6">
                         <h6 class="font-weight-bold text-primary">Tujuan Sewa</h6>
                         <p>{{ $rent->tujuan_sewa }}</p>
+
+                        {{-- Bila ada ktp, maka tampilkan ktp --}}
+                        @if($rent->image_url != null)
+                        <h6 class="font-weight-bold text-primary">Bukti KTP</h6>
+                        <img src="{{url('uploads') ."/". $rent->image_url }}" alt="Bukti Transfer" class="img-fluid" style="max-width:400px">
+                        @endif
+
                     </div>
                 </div>
 
@@ -113,3 +161,65 @@
     </div>
 </div>
 @endsection
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const buttons = document.querySelectorAll('.change-status');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const rentId = button.dataset.id;
+                const newStatus = button.dataset.status;
+                const iconStatus = document.getElementById('iconStatus');
+                const status = document.getElementById('status');
+
+                try {
+                    const response = await fetch(`/transaksi/sewa/${rentId}/status/${newStatus}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify({ status: newStatus })
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        // Update button or status message
+                        const statusMessage = document.getElementById(`status-message-${rentId}`);
+                        statusMessage.textContent = `Status berhasil diperbarui menjadi ${newStatus}`;
+                        statusMessage.classList.add('show'); // Tampilkan dengan animasi
+
+                    // Sembunyikan pesan setelah 3 detik
+                    setTimeout(() => {
+                        statusMessage.classList.remove('show'); // Mulai sembunyikan
+                        setTimeout(() => {
+                        }, 500); // Waktu ini harus sama dengan durasi animasi CSS
+                    }, 1000);
+
+                        // Optional: Update button UI dynamically
+                        if (newStatus === 'dikembalikan') {
+                            button.innerHTML = '<i class="fas fa-check"></i> Telah Dikembalikan';
+                            button.classList.remove('btn-danger');
+                            button.classList.add('btn-success');
+                            button.dataset.status = 'terbayar';
+                            status.textContent = ': Dikembalikan';
+
+                        } else {
+                            button.innerHTML = '<i class="fas fa-times"></i> Belum Dikembalikan';
+                            button.classList.remove('btn-success');
+                            button.classList.add('btn-danger');
+                            button.dataset.status = 'dikembalikan';
+                            status.textContent = ': Terbayar';
+                        }
+                    } else {
+                        throw new Error(result.message || 'Terjadi kesalahan');
+                    }
+                } catch (error) {
+                    alert('Gagal memperbarui status: ' + error.message);
+                }
+            });
+        });
+    });
+</script>

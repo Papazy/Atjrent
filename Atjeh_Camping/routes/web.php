@@ -55,4 +55,4 @@ Route::get('/riwayat', function () {
 Route::put('/profile', [ProfileController::class, 'updateProfile'])->name('profile.update');
 // HHari ini
 
-Route::post('/payment/{amount}', [PaymentController::class, 'processPayment']);
+Route::post('/payment/{tipeTransaksi}/{amount}', [PaymentController::class, 'processPayment']);

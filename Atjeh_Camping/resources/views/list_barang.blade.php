@@ -51,7 +51,7 @@
 
     <div class="col-md-4 col-12">
       <div class="card p-4">
-        <div class="card-header">Camp To Seulawah</div>
+        <div class="card-header">{{ $rent->nama_keranjang }}</div>
         <div class="card-body">
           @php
           use Carbon\Carbon;
@@ -208,6 +208,9 @@
           }
         });
 
+        const sumTotal = document.getElementById('total-pesanan').textContent.replaceAll('.', '').replaceAll('Rp', '');
+        localStorage.setItem('totalPayment', sumTotal);
+
 
         // Handle change total price
 
@@ -228,23 +231,23 @@
         payButton.addEventListener('click', function() {
           // const totalPayment = document.getElementById('total-payment').textContent.replaceAll('.','');
           const totalPayment = localStorage.getItem('totalPayment')
-          fetch('/payment/' + totalPayment, {
-              method: 'POST'
-              , headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                , 'Content-Type': 'application/json'
-              , }
-              , body: JSON.stringify({
-                amount: 10000
-              , })
+          const formData = new FormData();
+            formData.append('amount', totalPayment);
+            formData.append('rent_id', {{ $keranjang_id }});
+            formData.append('image', document.getElementById('uploadKtp').files[0]);
+          fetch('/payment/sewa/' + totalPayment, {
+              method: 'POST',
+              headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                 },
+                body: formData,
+
             })
             .then(response => response.json())
             .then(data => {
               snap.pay(data.snap_token);
             });
         })
-
-
 
         // Handle on change Alamat
         const pickupOption = document.getElementById('pickupOption');
@@ -254,11 +257,7 @@
         pickupOption.addEventListener('change', function() {
           if (this.checked) {
             kabupatenDropdown.style.display = 'none';
-            let totalHarga = {
-              {
-                $totalHarga
-              }
-            }
+            let totalHarga = {{ $totalHarga }}
             document.getElementById('total-payment').innerHTML = totalHarga.toLocaleString('id-ID');
           } else {
             kabupatenDropdown.style.display = 'block';
@@ -269,11 +268,7 @@
             kabupatenDropdown.style.display = 'block';
           } else {
             kabupatenDropdown.style.display = 'none';
-            let totalHarga = {
-              {
-                $totalHarga
-              }
-            }
+            let totalHarga = {{ $totalHarga }}
             document.getElementById('total-payment').innerHTML = totalHarga.toLocaleString('id-ID');
           }
         });

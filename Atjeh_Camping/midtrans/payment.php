@@ -1,17 +1,17 @@
-<?php 
+<?php
 /*Install Midtrans PHP Library (https://github.com/Midtrans/midtrans-php)
 composer require midtrans/midtrans-php
-                              
-Alternatively, if you are not using **Composer**, you can download midtrans-php library 
-(https://github.com/Midtrans/midtrans-php/archive/master.zip), and then require 
-the file manually.   
+
+Alternatively, if you are not using **Composer**, you can download midtrans-php library
+(https://github.com/Midtrans/midtrans-php/archive/master.zip), and then require
+the file manually.
 
 require_once dirname(__FILE__) . '/pathofproject/Midtrans.php'; */
 
 //SAMPLE REQUEST START HERE
 
 // Set your Merchant Server Key
-Midtrans\Config::$serverKey = 'SB-Mid-server-5R6azU4jcW08MJ4k5l4LEzqS';
+Midtrans\Config::$serverKey = config('midtrans.server_key');
 
 // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
 \Midtrans\Config::$isProduction = false;

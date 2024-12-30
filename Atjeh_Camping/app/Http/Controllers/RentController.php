@@ -57,7 +57,7 @@ class RentController extends Controller
         $tanggal_mulai = $rent->tanggal_mulai;
         $tanggal_selesai = $rent->tanggal_selesai;
         $keranjang_id = $id;
-        return view('list_barang', compact(['barangs', 'keranjang_id', 'tanggal_mulai', 'tanggal_selesai']));
+        return view('list_barang', compact(['barangs', 'keranjang_id', 'tanggal_mulai', 'tanggal_selesai', 'rent']));
     }
 
     // Fungsi untuk menyimpan data keranjang

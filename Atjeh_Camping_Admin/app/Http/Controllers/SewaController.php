@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Rent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class SewaController extends Controller
 {
@@ -27,4 +28,19 @@ class SewaController extends Controller
 
         return view('transaksi.detailSewa', compact('rent'));
     }
-}
+
+    public function updateStatus($id, $status)
+    {
+        $rent = Rent::findOrFail($id);
+        $rent->status = $status;
+        $rent->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status berhasil diperbarui',
+            'status' => $status
+        ], 200);
+    }
+
+
+    }
