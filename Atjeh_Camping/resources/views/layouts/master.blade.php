@@ -84,6 +84,8 @@ color: black;
     transform: translateY(-5px); /* Efek naik sedikit saat hover */
 }
 
+
+
 .card-title {
     font-family: "Source Code Pro", serif;
     font-size: 14px;
