@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 27 Des 2024 pada 14.09
+-- Waktu pembuatan: 30 Des 2024 pada 18.45
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -51,7 +51,8 @@ INSERT INTO `barangs` (`id`, `nama`, `deskripsi`, `harga`, `stok_barang`, `image
 (7, 'Nesting', 'Alat Masak', 50000, 10, 'JZ2xrVmciAJVAEuCgCuqCr4z0b65hpgXypxFzTVvDhr7LFzu5Cx9pTCHZNbYcoOrmXp93E9zzMMbjvabLKkj2UnLpxtXsQpLnWR0.jpeg', '-', 'Alat Memasak', 'Sewa', '2024-12-17 07:21:22', '2024-12-17 07:21:22'),
 (8, 'Tenda 10 Orang', 'barang bagus mulus', 100000, 1, 'CXDZ4p5IGPFp1zVb1zOkDppQN8TQ0LJipHvSX6H3DxsWZEc8ERv3UcgSs1N7vWndMMdL6rOVo5Gxr1cHjALZOt8tu0vZzZ0sV5GW.jpg', 'Eiger', 'Alat Tidur', 'jual', '2024-12-17 07:22:14', '2024-12-17 07:22:14'),
 (9, 'Tenda 4 orang', 'ukuran 4 x 4 meter', 100000, 20, '88fJeMyir9iwvt9VXsiKW9Ya33YeNNwN09XnLEYUIccqIPcKjhY9XzK9ldOsuPNd7rECMOPH8lLM3mOpHo1ArOQ66WGNF571tCDd.jpg', 'avtech', 'Alat Tidur', 'Sewa', '2024-12-17 20:45:28', '2024-12-17 20:45:28'),
-(10, 'tenda 50 orang', 'ukuran 50 x 50 meter', 2000000, 5, 'dbmy8VEDrDW28nn5dR7QyWX0wFYvUg70yM0zlX1KyS3b7fMFFc79tBQ1eHlXT5JpU7JmTzFm0jetaqoDWsHnaPvEeJZD3hDUxtZA.jpeg', 'La', 'Alat Tidur', 'Sewa', '2024-12-17 20:46:18', '2024-12-17 20:46:18');
+(10, 'tenda 50 orang', 'ukuran 50 x 50 meter', 2000000, 5, 'dbmy8VEDrDW28nn5dR7QyWX0wFYvUg70yM0zlX1KyS3b7fMFFc79tBQ1eHlXT5JpU7JmTzFm0jetaqoDWsHnaPvEeJZD3hDUxtZA.jpeg', 'La', 'Alat Tidur', 'Sewa', '2024-12-17 20:46:18', '2024-12-17 20:46:18'),
+(11, 'tes', 'tes', 1200, 4, 'v4Rk0e4i5Moc1oUGdUYmpqGNkj1FE5jJVmPB0rBg5HJ3lFpkf2kDurhgwjpGTTFVFu5MDY9mV0QdbE9cqqaeYeTaPsTYxYfTu8d5.png', 'tes', 'Alat Tidur', 'Sewa', '2024-12-30 05:47:58', '2024-12-30 05:47:58');
 
 -- --------------------------------------------------------
 
@@ -167,7 +168,8 @@ CREATE TABLE `juals` (
 --
 
 INSERT INTO `juals` (`id`, `barangs_id`, `users_id`, `harga_total`, `stok_barang`, `status`, `snap_token`, `created_at`, `updated_at`) VALUES
-(1, 8, 2, 100000, 1, 'dibayar', 'tes', '2024-12-24 14:04:43', NULL);
+(1, 8, 2, 100000, 1, 'dibayar', 'tes', '2024-12-24 14:04:43', NULL),
+(5, 8, 5, 100000, 1, 'Terbayar', '09a0d65c-f98f-4c16-9374-f54846db6553', '2024-12-30 04:11:39', '2024-12-30 08:55:14');
 
 -- --------------------------------------------------------
 
@@ -292,18 +294,21 @@ CREATE TABLE `rents` (
   `status` varchar(255) NOT NULL,
   `snap_token` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `image_url` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data untuk tabel `rents`
 --
 
-INSERT INTO `rents` (`id`, `users_id`, `nama_keranjang`, `tanggal_mulai`, `tanggal_selesai`, `tujuan_sewa`, `harga_total`, `status`, `snap_token`, `created_at`, `updated_at`) VALUES
-(10, 1, 'camp', '2024-12-26', '2024-12-28', 'qawsderd', 0, 'pen', NULL, '2024-12-23 05:25:44', '2024-12-23 05:25:44'),
-(11, 1, 'camp1', '2024-12-25', '2024-12-25', '1234567', 0, 'pending', NULL, '2024-12-23 06:09:10', '2024-12-23 06:09:10'),
-(12, 1, 'camp', '2024-12-19', '2024-12-26', '1234567', 0, 'pending', NULL, '2024-12-23 06:31:17', '2024-12-23 06:31:17'),
-(13, 5, 'tes', '2024-12-26', '2024-12-27', 'berangkat', 0, 'pending', NULL, '2024-12-25 12:13:01', '2024-12-25 12:13:01');
+INSERT INTO `rents` (`id`, `users_id`, `nama_keranjang`, `tanggal_mulai`, `tanggal_selesai`, `tujuan_sewa`, `harga_total`, `status`, `snap_token`, `created_at`, `updated_at`, `image_url`) VALUES
+(10, 1, 'camp', '2024-12-26', '2024-12-28', 'qawsderd', 0, 'pen', NULL, '2024-12-23 05:25:44', '2024-12-23 05:25:44', NULL),
+(11, 1, 'camp1', '2024-12-25', '2024-12-25', '1234567', 0, 'pending', NULL, '2024-12-23 06:09:10', '2024-12-23 06:09:10', NULL),
+(12, 1, 'camp', '2024-12-19', '2024-12-26', '1234567', 0, 'pending', NULL, '2024-12-23 06:31:17', '2024-12-30 10:24:16', NULL),
+(13, 5, 'tes', '2024-12-26', '2024-12-27', 'berangkat', 0, 'pending', 'eb0f3b90-f86d-47dd-b9fe-950dd766fe84', '2024-12-25 12:13:01', '2024-12-30 10:29:00', 'IM74V2gCAooBr7BGzhrN6MbPEg44inCRZBKGr0f99dVohkMtnkQeYzACQsUcw4Qbi21hQXWM2AVQ8QfkUXCvO4EKOqdsSDecqij2.png'),
+(14, 5, 'Ke Seulawah', '2024-12-27', '2024-12-30', 'jalan jalan', 0, 'dikembalikan', 'fcd3930a-a2f0-48fc-a316-d6cd4a750ba5', '2024-12-27 07:29:23', '2024-12-30 10:34:15', 'gXygQQNvH8C4Z2ssx7PQOGmUIKyGotfTJ0irzvvo4S2c71eayBvWHMAGaAJnY3W8Z0HlZaRVf255yur75T7KKunvRzo8WE38749s.png'),
+(15, 6, 'tes', '2024-12-26', '2025-01-01', '123', 0, 'pending', NULL, '2024-12-29 15:50:10', '2024-12-29 15:50:10', NULL);
 
 -- --------------------------------------------------------
 
@@ -327,7 +332,11 @@ CREATE TABLE `rent_details` (
 INSERT INTO `rent_details` (`id`, `rents_id`, `barangs_id`, `stok_barang`, `created_at`, `updated_at`) VALUES
 (1, 12, 10, 1, '2024-12-23 06:39:58', '2024-12-23 06:39:58'),
 (2, 12, 9, 1, '2024-12-23 07:08:28', '2024-12-23 07:08:28'),
-(7, 13, 7, 2, '2024-12-27 06:01:16', '2024-12-27 06:01:16');
+(7, 13, 7, 2, '2024-12-27 06:01:16', '2024-12-27 06:01:16'),
+(8, 14, 9, 1, '2024-12-27 07:29:31', '2024-12-27 07:29:31'),
+(9, 14, 6, 1, '2024-12-27 07:40:04', '2024-12-27 07:40:04'),
+(10, 15, 10, 2, '2024-12-29 15:50:15', '2024-12-29 15:50:15'),
+(11, 14, 10, 1, '2024-12-30 06:36:23', '2024-12-30 06:36:23');
 
 -- --------------------------------------------------------
 
@@ -370,8 +379,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('bPl0biQBbUUSN3u1f9zyU8EuRewWo4oDTiyiIXvt', 5, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoieVdSVlJwakpWNHBzTVBhT2Y5VXVLRFhpZno2ZFY1UDdIWll0NGt5TSI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjI2OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvc2FsZSI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjU7fQ==', 1735304553),
-('IYwNoWRaJAm5HnDxRlpOdczePmLlFuMzssxccOuI', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoic2JkMllyajBYbEdtTm1CUVRGV2ZGUHRBVWhSYnhXRk1yR2VuWTRiSyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1735303024);
+('mQBMTdJ2moeWB1SF7zv2vKLOb2rLREQ7fbsmzbwZ', 5, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiTThVd00zNmJ4VkVlZE5sRXh6ZXN2Qkw3a2J4aTJpZDdUSXN0bFY3SSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9yZW50L2tlcmFuamFuZy1kZXRhaWwvMTMiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aTo1O30=', 1735574486);
 
 -- --------------------------------------------------------
 
@@ -384,7 +392,7 @@ CREATE TABLE `users` (
   `roles_id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `kota` varchar(255) NOT NULL,
+  `no_hp` varchar(20) NOT NULL,
   `alamat` varchar(255) NOT NULL,
   `role_verified_is` smallint(6) DEFAULT NULL,
   `password` varchar(255) NOT NULL,
@@ -398,11 +406,12 @@ CREATE TABLE `users` (
 -- Dumping data untuk tabel `users`
 --
 
-INSERT INTO `users` (`id`, `roles_id`, `name`, `email`, `kota`, `alamat`, `role_verified_is`, `password`, `email_verified_at`, `remember_token`, `created_at`, `updated_at`) VALUES
+INSERT INTO `users` (`id`, `roles_id`, `name`, `email`, `no_hp`, `alamat`, `role_verified_is`, `password`, `email_verified_at`, `remember_token`, `created_at`, `updated_at`) VALUES
 (1, 1, 'Administrator', 'administrator@gmail.com', '', '', 1, '$2y$12$0SjhUxnL1oiuEm8W6bkzMOdr3NFTG6nfjTzeQgSRVN2iPI5auhBIW', NULL, NULL, '2024-12-10 07:06:19', '2024-12-10 07:06:19'),
 (2, 2, 'M. FADHLAN', 'mfadhlan1721@gmail.com', '', '', NULL, '$2y$12$d/RK9fvKcLgxf3bZMTIs9OqfORTfDpnpiOiHn1JRElKN3ZnPNoQpK', NULL, NULL, '2024-12-15 12:22:04', '2024-12-15 12:22:04'),
 (4, 1, 'tes', 'tes@gmail.com', '', '', NULL, '$2y$12$YcxpvuGYtraVzvOFRnfH4O/rvJB.X1eTST87AP5TB2O3wMJLiBrMK', NULL, NULL, '2024-12-24 04:42:45', '2024-12-24 04:42:45'),
-(5, 2, 'Fajry Ariansyah', 'fajryjobs@gmail.com', 'beureneun', 'DUSUN BLANG, Pasi Jambu, Kaway Xvi', NULL, '$2y$12$Z4pBXhLjJ6zM4sJt3TGMiON7uRWV4JoH0EVV92MixBkHeS4XQVkxW', NULL, NULL, '2024-12-25 11:14:38', '2024-12-25 11:14:38');
+(5, 2, 'Fajry Ariansyah', 'fajryjobs@gmail.com', '', 'DUSUN BLANG, Pasi Jambu, Kaway Xvi', NULL, '$2y$12$Z4pBXhLjJ6zM4sJt3TGMiON7uRWV4JoH0EVV92MixBkHeS4XQVkxW', NULL, NULL, '2024-12-25 11:14:38', '2024-12-25 11:14:38'),
+(6, 2, 'Fajry', 'fajryhalteks@gmail.com', '081234567', 'DUSUN BLANG, Pasi Jambu, Kaway Xv', NULL, '$2y$12$PPPBG.24MABkXH7TjA89UePUNE5W3xZUA3jW9PdvEfkMc8U61EuiW', NULL, NULL, '2024-12-29 13:00:00', '2024-12-29 15:00:34');
 
 -- --------------------------------------------------------
 
@@ -564,7 +573,7 @@ ALTER TABLE `user_role_menus`
 -- AUTO_INCREMENT untuk tabel `barangs`
 --
 ALTER TABLE `barangs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT untuk tabel `detailkeranjangsewa`
@@ -588,7 +597,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT untuk tabel `juals`
 --
 ALTER TABLE `juals`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT untuk tabel `kabupatens`
@@ -618,13 +627,13 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT untuk tabel `rents`
 --
 ALTER TABLE `rents`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT untuk tabel `rent_details`
 --
 ALTER TABLE `rent_details`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT untuk tabel `roles`
@@ -636,7 +645,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT untuk tabel `user_role_menus`

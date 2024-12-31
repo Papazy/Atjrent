@@ -10,9 +10,7 @@ class WelcomeController extends Controller
         // Ambil semua data dari tabel barang
         $barangSewa = Barang::where('is_jual', 'Sewa')->latest()->get();
         $barangJual = Barang::where('is_jual', 'Jual')->latest()->get();
-        // dd($barangSewa);
-        // var_dump(ENV('APP_ASSET'));
-        // Kirim datawelcome ke view 'rent'
+
         return view('welcome', compact('barangSewa', 'barangJual'));
     }
 
