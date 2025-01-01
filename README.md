@@ -134,26 +134,27 @@ Buka 2 Terminal, (untuk client dan admin).
 - [x] Pencarian
 - [X] Register dan Login
    - [X] Menambahkan Alamat di Register
-- [ ] Penyewaan
-   - [ ] Handle Simpan KTP
+- [x] Penyewaan
+   - [x] Handle Simpan KTP
 - [x] Pembelian
 - [x] Pembayaran
-   - [ ] Integrasi Midtrans
+   - [x] Integrasi Midtrans
    - [x] Update status setelah pembayaran berhasil
 - [ ] Notifikasi Email setelah transaksi
 - [x] Profile
    - [x] Update Profile
-
-
+   - [x] Fix bug style
 
 **admin**
 - [x] Manajemen barang
-- [ ] Dashboard informasi Penyewaan dan Pembelian
+- [x] Dashboard informasi Penyewaan dan Pembelian
    - [x] Halaman dan Fitur
-   - [ ] Menampilkan KTP di penyewaan
+   - [x] Menampilkan KTP di penyewaan
    - [x] Halaman Detail Pembayaran
 - [x] Manajemen User
-
+- [ ] Dashboard Admin
+   - [ ] Pantauan Stok Barang
+   - [ ] Menampilkan informasi barang, user, transaksi
 
 ## Kontribusi
 

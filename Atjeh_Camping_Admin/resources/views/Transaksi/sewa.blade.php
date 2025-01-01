@@ -10,7 +10,6 @@
 <!-- Page Heading -->
 <h1 class="h3 mb-0 text-gray-800 mb-4">Stok Barang</h1>
 
-
 <div class="row">
   <div class="col-12">
       <div class="card shadow mb-4">
@@ -62,6 +61,7 @@
                         <th>Keranjang</th>
                         <th>Waktu Sewa</th>
                         <th>Harga</th>
+                        <th>Status</th>
                         <th>Aksi</th>
                       </tr>
                   </tfoot>
