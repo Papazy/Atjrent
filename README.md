@@ -136,7 +136,10 @@ Buka 2 Terminal, (untuk client dan admin).
    - [X] Menambahkan Alamat di Register
 - [x] Penyewaan
    - [x] Handle Simpan KTP
-- [x] Pembelian
+   - [X] Fix Keranjang terbayar tidak bisa dipakai sewa lagi
+   - [ ] Menampilkan Harga Ongkir
+- [ ] Pembelian
+   - [ ] Membuat Halaman History Pembelian 
 - [x] Pembayaran
    - [x] Integrasi Midtrans
    - [x] Update status setelah pembayaran berhasil
@@ -144,17 +147,22 @@ Buka 2 Terminal, (untuk client dan admin).
 - [x] Profile
    - [x] Update Profile
    - [x] Fix bug style
+- [ ] Update Stok setiap transaksi dilakukan atau pengembalian barang
+- [x] Membuat Observers
+   - [x] Observer Pemantauan Jumlah Harga Keranjang
 
 **admin**
 - [x] Manajemen barang
-- [x] Dashboard informasi Penyewaan dan Pembelian
+- [ ] Dashboard informasi Penyewaan dan Penjualan
    - [x] Halaman dan Fitur
    - [x] Menampilkan KTP di penyewaan
    - [x] Halaman Detail Pembayaran
+   - [X] Fix Stok Barang dan Harga Total
+   - [ ] Tambahkan lokasi pengambilan barang (jual/sewa)
 - [x] Manajemen User
-- [ ] Dashboard Admin
-   - [ ] Pantauan Stok Barang
-   - [ ] Menampilkan informasi barang, user, transaksi
+- [x] Dashboard Admin
+   - [x] Pantauan Stok Barang
+   - [x] Menampilkan informasi barang, user, transaksi
 
 ## Kontribusi
 

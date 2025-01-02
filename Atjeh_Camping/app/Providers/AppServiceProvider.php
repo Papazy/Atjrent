@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Rent_detail;
+use App\Observers\RentDetailObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -20,5 +22,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+        Rent_detail::observe(RentDetailObserver::class);
     }
 }

@@ -46,7 +46,11 @@
                             <td>{{ $data->user->no_hp }}</td>
                             <td>{{ $data->nama_keranjang }}</td>
                             <td>{{  \Carbon\Carbon::parse($data->tanggal_mulai)->format('d M Y') . " - " . \Carbon\Carbon::parse($data->tanggal_selesai)->format('d M Y') }}</td>
-                            <td>{{ $data->harga_total }}</td>
+                            <td>Rp {{ number_format($data->harga_total, 0, ',', '.') }}</td>
+                            {{-- Jumlah hari --}}
+
+
+
                             <td>{{ $data->status }}</td>
                             <td>
                                 <a href={{ "sewa/".$data->id }} type="button" class="btn btn-info" >Detail</a>

@@ -23,9 +23,9 @@ class SewaController extends Controller
 
     public function detail($id)
     {
-        $rent = Rent::with(['user','details', 'barangs'])->findOrFail($id);
+        $rent = Rent::with(['user','details'])->findOrFail($id);
         // var_dump($rent->barangs[0]->nama);
-
+        // dd($rent->details[0]->barang);
         return view('transaksi.detailSewa', compact('rent'));
     }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Barang;
 use App\Models\Rent;
 use App\Models\Rent_detail;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -46,7 +47,9 @@ class RentController extends Controller
 
     function keranjang()
     {
-        $keranjang = Rent::where('users_id', Auth::user()->id)->latest()->get();
+        $keranjang = Rent::where('users_id', Auth::user()->id)
+            ->latest()
+            ->get();
         return view('checkout', compact('keranjang'));
     }
 
@@ -109,7 +112,11 @@ class RentController extends Controller
 
     function keranjangAjax()
     {
-        $keranjang = Rent::where('users_id', Auth::user()->id)->latest()->get();
+        $keranjang = Rent::where('users_id', Auth::user()->id)
+            ->whereNotIn('status', ['terbayar', 'dikembalikan'])
+            ->where('tanggal_mulai', '>', Carbon::now())
+            ->latest()
+            ->get();
         return response()->json([
             'data' => $keranjang
         ]);

@@ -49,20 +49,23 @@
       </div>
     </div>
 
+    @php
+    use Carbon\Carbon;
+
+    // Mendapatkan selisih hari dari $item->tanggal_mulai dan $item->tanggal_selesai
+    $totalHari = Carbon::parse($tanggal_mulai)->diffInDays(Carbon::parse($tanggal_selesai)) + 1; // Tambahkan 1 jika ingin inklusif (termasuk tanggal mulai dan selesai));
+    $jumlahHarga = $barangs->sum(function ($item) {
+    return $item->barang->harga * $item->stok_barang;
+    });
+    $totalHarga = $jumlahHarga * $totalHari;
+    @endphp
+    <!-- Cart Summary -->
+    @if($rent->status == 'pending' && $rent->tanggal_mulai >= Carbon::now())
     <div class="col-md-4 col-12">
       <div class="card p-4">
         <div class="card-header">{{ $rent->nama_keranjang }}</div>
         <div class="card-body">
-          @php
-          use Carbon\Carbon;
 
-          // Mendapatkan selisih hari dari $item->tanggal_mulai dan $item->tanggal_selesai
-          $totalHari = Carbon::parse($tanggal_mulai)->diffInDays(Carbon::parse($tanggal_selesai)) + 1; // Tambahkan 1 jika ingin inklusif (termasuk tanggal mulai dan selesai));
-          $jumlahHarga = $barangs->sum(function ($item) {
-          return $item->barang->harga * $item->stok_barang;
-          });
-          $totalHarga = $jumlahHarga * $totalHari;
-          @endphp
           <div class="d-flex justify-content-between mb-1">
             <span class="text-muted">Harga</span>
             <div>
@@ -177,8 +180,75 @@
         </div>
       </div>
     </div>
+    @elseif($rent->status == "terbayar" || $rent->status == "dikembalikan")
+    <div class="col-md-4 col-12">
+      <div class="card p-4">
+        <div class="card-header">{{ $rent->nama_keranjang }}</div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between mb-1">
+            <span class="text-muted">Harga</span>
+            <div>
+              Rp.
+              <span id="jumlah_harga">{{ number_format($jumlahHarga, 0, ",", ".") }}</span>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between mb-1">
+            <span class="text-muted">Lama sewa</span>
+            <div>
+              <span id="jumlah_hari">{{ number_format($totalHari, 0, ",", ".") }} hari</span>
+            </div>
+          </div>
+          <hr />
+          <div class="d-flex justify-content-between mb-1">
+              <span class="text-muted">Lokasi Ambil</span>
+              <div>
+                  <span id="jumlah_hari">{{ number_format($totalHari, 0, ",", ".") }} hari</span>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between mb-1">
+                <span class="text-muted">Ongkir</span>
+                <div>
+                  <span id="jumlah_hari">{{ number_format($totalHari, 0, ",", ".") }} hari</span>
+                </div>
+              </div>
+            <hr />
+            <div class="d-flex justify-content-between mb-3">
+            <span class="text-muted">Total Harga</span>
+            <div>
+              Rp.
+              <span id="total-pesanan">{{ number_format($totalHarga, 0, ",", ".") }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    @else
+    {{-- Menampilkan bahwa keranjang sudah kedaluwarsa --}}
+    <div class="col-md-4 col-12">
+        <div class="card p-4">
+            <div class="card-header">{{ $rent->nama_keranjang }}</div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-1">
+                <span class="text-muted">Harga</span>
+                <div>
+                    Rp.
+                    <span id="jumlah_harga">{{ number_format($jumlahHarga, 0, ",", ".") }}</span>
+                </div>
+                </div>
+                <div class="d-flex justify-content-between mb-1">
+                <span class="text-muted">Lama sewa</span>
+                <div>
+                    <span id="jumlah_hari">{{ number_format($totalHari, 0, ",", ".") }} hari</span>
+                </div>
+                </div>
+                <hr />
+                <button class="btn btn-danger d-flex w-full ">
+                    Maaf, waktu rencana sewa sudah lewat
+                </button>
+        @endif
 
-    @endsection
+
+        @endsection
 
 
 
@@ -186,216 +256,228 @@
 
 
 
-    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
+        <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
 
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
-    <script>
-      // JavaScript to toggle visibility of kabupaten dropdown
-      document.addEventListener('DOMContentLoaded', function() {
-
-        // Handle Button payment on upload file
-        const fileInput = document.getElementById('uploadKtp');
-        fileInput.addEventListener('change', function() {
-          const payButton = document.querySelector('.btn-payment');
-          if (fileInput.files.length > 0) {
-            payButton.removeAttribute("disabled");
-          } else {
-            payButton.setAttribute("disabled", "true");
-          }
-        });
-
-        const sumTotal = document.getElementById('total-pesanan').textContent.replaceAll('.', '').replaceAll('Rp', '');
-        localStorage.setItem('totalPayment', sumTotal);
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-        // Handle change total price
+        <script>
+          // JavaScript to toggle visibility of kabupaten dropdown
+          document.addEventListener('DOMContentLoaded', function() {
 
-        const kabupatenSelect = document.getElementById('kabupaten');
-        kabupatenSelect.addEventListener('change', function() {
-          const selectedOption = kabupatenSelect.options[kabupatenSelect.selectedIndex];
-          if (selectedOption) {
-            let totalPesanan = document.getElementById('total-pesanan').textContent.replaceAll('.', '');
-            const sumTotal = parseInt(selectedOption.getAttribute('data-amount')) + parseInt(totalPesanan);
-            document.getElementById('total-payment').innerHTML = sumTotal.toLocaleString('id-ID')
-            localStorage.setItem('totalPayment', sumTotal);
-          }
-        });
-
-        // Handle FETCH Midtrans
-
-        const payButton = document.getElementById("paybutton");
-        payButton.addEventListener('click', function() {
-          // const totalPayment = document.getElementById('total-payment').textContent.replaceAll('.','');
-          const totalPayment = localStorage.getItem('totalPayment')
-          const formData = new FormData();
-            formData.append('amount', totalPayment);
-            formData.append('rent_id', {{ $keranjang_id }});
-            formData.append('image', document.getElementById('uploadKtp').files[0]);
-          fetch('/payment/sewa/' + totalPayment, {
-              method: 'POST',
-              headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                 },
-                body: formData,
-
-            })
-            .then(response => response.json())
-            .then(data => {
-              snap.pay(data.snap_token);
+            // Handle Button payment on upload file
+            const fileInput = document.getElementById('uploadKtp');
+            fileInput.addEventListener('change', function() {
+              const payButton = document.querySelector('.btn-payment');
+              if (fileInput.files.length > 0) {
+                payButton.removeAttribute("disabled");
+              } else {
+                payButton.setAttribute("disabled", "true");
+              }
             });
-        })
 
-        // Handle on change Alamat
-        const pickupOption = document.getElementById('pickupOption');
-        const deliveryOption = document.getElementById('deliveryOption');
-        const kabupatenDropdown = document.getElementById('kabupatenDropdown');
-
-        pickupOption.addEventListener('change', function() {
-          if (this.checked) {
-            kabupatenDropdown.style.display = 'none';
-            let totalHarga = {{ $totalHarga }}
-            document.getElementById('total-payment').innerHTML = totalHarga.toLocaleString('id-ID');
-          } else {
-            kabupatenDropdown.style.display = 'block';
-          }
-        });
-        deliveryOption.addEventListener('change', function() {
-          if (this.checked) {
-            kabupatenDropdown.style.display = 'block';
-          } else {
-            kabupatenDropdown.style.display = 'none';
-            let totalHarga = {{ $totalHarga }}
-            document.getElementById('total-payment').innerHTML = totalHarga.toLocaleString('id-ID');
-          }
-        });
-      });
+            const sumTotal = document.getElementById('total-pesanan').textContent.replaceAll('.', '').replaceAll('Rp', '');
+            localStorage.setItem('totalPayment', sumTotal);
 
 
-      // delete
+            // Handle change total price
 
-      function handleDelete(button) {
-        let dataId = $(button).data('id'); // Ambil ID data dari atribut tombol
-        let keranjangId = $(button).data('cart-id'); // Ambil ID data dari atribut tombol
-        console.log(keranjangId);
-        // return ;
-        let token = $('meta[name="csrf-token"]').attr('content'); // Ambil CSRF token dari meta tag
-        // console.log(ok);
-
-        Swal.fire({
-          icon: 'warning'
-          , title: 'Apakah Kamu Yakin?'
-          , text: "Ingin menghapus data ini!"
-          , showCancelButton: true
-          , cancelButtonText: 'TIDAK'
-          , confirmButtonText: 'YA, HAPUS!'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            $.ajax({
-              url: `/list_barang/destroy/${dataId}`, // Sesuaikan URL dengan route
-              type: "DELETE"
-              , data: {
-                _token: token // Kirimkan CSRF token
+            const kabupatenSelect = document.getElementById('kabupaten');
+            kabupatenSelect.addEventListener('change', function() {
+              const selectedOption = kabupatenSelect.options[kabupatenSelect.selectedIndex];
+              if (selectedOption) {
+                let totalPesanan = document.getElementById('total-pesanan').textContent.replaceAll('.', '');
+                const sumTotal = parseInt(selectedOption.getAttribute('data-amount')) + parseInt(totalPesanan);
+                document.getElementById('total-payment').innerHTML = sumTotal.toLocaleString('id-ID')
+                localStorage.setItem('totalPayment', sumTotal);
               }
-              , success: function(response) {
-                if (response.status === 'success') {
-                  Swal.fire({
-                    icon: 'success'
-                    , title: 'Berhasil!'
-                    , text: response.message
-                    , showConfirmButton: false
-                    , timer: 3000
-                  });
+            });
 
-                  // Hapus baris dari tabel
-                  $(`button[data-id="${dataId}"]`).closest('tr').remove();
+            // Handle FETCH Midtrans
 
-                  // merefresh halaman
-                  location.reload();
-
-
-                } else {
-                  Swal.fire({
-                    icon: 'error'
-                    , title: 'Gagal!'
-                    , text: response.message
-                    , showConfirmButton: false
-                    , timer: 3000
-                  });
+            const payButton = document.getElementById("paybutton");
+            payButton.addEventListener('click', function() {
+              // const totalPayment = document.getElementById('total-payment').textContent.replaceAll('.','');
+              const totalPayment = localStorage.getItem('totalPayment')
+              const formData = new FormData();
+              formData.append('amount', totalPayment);
+              formData.append('rent_id', {
+                {
+                  $keranjang_id
                 }
+              });
+              formData.append('image', document.getElementById('uploadKtp').files[0]);
+              fetch('/payment/sewa/' + totalPayment, {
+                  method: 'POST'
+                  , headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                  , }
+                  , body: formData,
+
+                })
+                .then(response => response.json())
+                .then(data => {
+                  snap.pay(data.snap_token);
+                });
+            })
+
+            // Handle on change Alamat
+            const pickupOption = document.getElementById('pickupOption');
+            const deliveryOption = document.getElementById('deliveryOption');
+            const kabupatenDropdown = document.getElementById('kabupatenDropdown');
+
+            pickupOption.addEventListener('change', function() {
+              if (this.checked) {
+                kabupatenDropdown.style.display = 'none';
+                let totalHarga = {
+                  {
+                    $totalHarga
+                  }
+                }
+                document.getElementById('total-payment').innerHTML = totalHarga.toLocaleString('id-ID');
+              } else {
+                kabupatenDropdown.style.display = 'block';
               }
-              , error: function(xhresponse) {
-                console.log(xhresponse.responseText);
-                Swal.fire({
-                  icon: 'error'
-                  , title: 'Error!'
-                  , text: 'Terjadi kesalahan saat menghapus data!'
-                  , showConfirmButton: false
-                  , timer: 3000
+            });
+            deliveryOption.addEventListener('change', function() {
+              if (this.checked) {
+                kabupatenDropdown.style.display = 'block';
+              } else {
+                kabupatenDropdown.style.display = 'none';
+                let totalHarga = {
+                  {
+                    $totalHarga
+                  }
+                }
+                document.getElementById('total-payment').innerHTML = totalHarga.toLocaleString('id-ID');
+              }
+            });
+          });
+
+
+          // delete
+
+          function handleDelete(button) {
+            let dataId = $(button).data('id'); // Ambil ID data dari atribut tombol
+            let keranjangId = $(button).data('cart-id'); // Ambil ID data dari atribut tombol
+            console.log(keranjangId);
+            // return ;
+            let token = $('meta[name="csrf-token"]').attr('content'); // Ambil CSRF token dari meta tag
+            // console.log(ok);
+
+            Swal.fire({
+              icon: 'warning'
+              , title: 'Apakah Kamu Yakin?'
+              , text: "Ingin menghapus data ini!"
+              , showCancelButton: true
+              , cancelButtonText: 'TIDAK'
+              , confirmButtonText: 'YA, HAPUS!'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                $.ajax({
+                  url: `/list_barang/destroy/${dataId}`, // Sesuaikan URL dengan route
+                  type: "DELETE"
+                  , data: {
+                    _token: token // Kirimkan CSRF token
+                  }
+                  , success: function(response) {
+                    if (response.status === 'success') {
+                      Swal.fire({
+                        icon: 'success'
+                        , title: 'Berhasil!'
+                        , text: response.message
+                        , showConfirmButton: false
+                        , timer: 3000
+                      });
+
+                      // Hapus baris dari tabel
+                      $(`button[data-id="${dataId}"]`).closest('tr').remove();
+
+                      // merefresh halaman
+                      location.reload();
+
+
+                    } else {
+                      Swal.fire({
+                        icon: 'error'
+                        , title: 'Gagal!'
+                        , text: response.message
+                        , showConfirmButton: false
+                        , timer: 3000
+                      });
+                    }
+                  }
+                  , error: function(xhresponse) {
+                    console.log(xhresponse.responseText);
+                    Swal.fire({
+                      icon: 'error'
+                      , title: 'Error!'
+                      , text: 'Terjadi kesalahan saat menghapus data!'
+                      , showConfirmButton: false
+                      , timer: 3000
+                    });
+                  }
                 });
               }
             });
           }
-        });
-      }
 
-      //   $('table').on('click', '.btn-delete', function () {
-      //     let dataId = $(this).data('id'); // Ambil ID data dari atribut tombol
-      //     let token = $("meta[name='csrf-token']").attr("content"); // Ambil CSRF token dari meta tag
-      //     console.log(ok);
+          //   $('table').on('click', '.btn-delete', function () {
+          //     let dataId = $(this).data('id'); // Ambil ID data dari atribut tombol
+          //     let token = $("meta[name='csrf-token']").attr("content"); // Ambil CSRF token dari meta tag
+          //     console.log(ok);
 
-      //     Swal.fire({
-      //         icon: 'warning',
-      //         title: 'Apakah Kamu Yakin?',
-      //         text: "Ingin menghapus data ini!",
-      //         showCancelButton: true,
-      //         cancelButtonText: 'TIDAK',
-      //         confirmButtonText: 'YA, HAPUS!'
-      //     }).then((result) => {
-      //         if (result.isConfirmed) {
-      //             $.ajax({
-      //                 url: `/checkout/list_barang/destroy/${dataId}`, // Sesuaikan URL dengan route
-      //                 type: "DELETE",
-      //                 data: {
-      //                     _token: token // Kirimkan CSRF token
-      //                 },
-      //                 success: function (response) {
-      //                     if (response.status === 'success') {
-      //                         Swal.fire({
-      //                             icon: 'success',
-      //                             title: 'Berhasil!',
-      //                             text: response.message,
-      //                             showConfirmButton: false,
-      //                             timer: 3000
-      //                         });
+          //     Swal.fire({
+          //         icon: 'warning',
+          //         title: 'Apakah Kamu Yakin?',
+          //         text: "Ingin menghapus data ini!",
+          //         showCancelButton: true,
+          //         cancelButtonText: 'TIDAK',
+          //         confirmButtonText: 'YA, HAPUS!'
+          //     }).then((result) => {
+          //         if (result.isConfirmed) {
+          //             $.ajax({
+          //                 url: `/checkout/list_barang/destroy/${dataId}`, // Sesuaikan URL dengan route
+          //                 type: "DELETE",
+          //                 data: {
+          //                     _token: token // Kirimkan CSRF token
+          //                 },
+          //                 success: function (response) {
+          //                     if (response.status === 'success') {
+          //                         Swal.fire({
+          //                             icon: 'success',
+          //                             title: 'Berhasil!',
+          //                             text: response.message,
+          //                             showConfirmButton: false,
+          //                             timer: 3000
+          //                         });
 
-      //                         // Hapus baris dari tabel
-      //                         $(`button[data-id="${dataId}"]`).closest('tr').remove();
-      //                     } else {
-      //                         Swal.fire({
-      //                             icon: 'error',
-      //                             title: 'Gagal!',
-      //                             text: response.message,
-      //                             showConfirmButton: false,
-      //                             timer: 3000
-      //                         });
-      //                     }
-      //                 },
-      //                 error: function (xhr) {
-      //                     Swal.fire({
-      //                         icon: 'error',
-      //                         title: 'Error!',
-      //                         text: 'Terjadi kesalahan saat menghapus data!',
-      //                         showConfirmButton: false,
-      //                         timer: 3000
-      //                     });
-      //                 }
-      //             });
-      //         }
-      //   });
-      //   });
+          //                         // Hapus baris dari tabel
+          //                         $(`button[data-id="${dataId}"]`).closest('tr').remove();
+          //                     } else {
+          //                         Swal.fire({
+          //                             icon: 'error',
+          //                             title: 'Gagal!',
+          //                             text: response.message,
+          //                             showConfirmButton: false,
+          //                             timer: 3000
+          //                         });
+          //                     }
+          //                 },
+          //                 error: function (xhr) {
+          //                     Swal.fire({
+          //                         icon: 'error',
+          //                         title: 'Error!',
+          //                         text: 'Terjadi kesalahan saat menghapus data!',
+          //                         showConfirmButton: false,
+          //                         timer: 3000
+          //                     });
+          //                 }
+          //             });
+          //         }
+          //   });
+          //   });
 
-    </script>
+        </script>
