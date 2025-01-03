@@ -133,7 +133,6 @@
                     <td>{{ $detail->barang->deskripsi }}</td>
                     <td>Rp{{ number_format($detail->barang->harga, 0, ',', '.') }}</td>
                     <td>{{ $detail->barang->stok_barang }}</td>
-
                     <td>Rp{{ number_format($detail->barang->harga * $detail->barang->stok_barang, 0, ',', '.') }}</td>
                     @endforeach
                 </tbody>

@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
@@ -66,7 +67,7 @@ class ProfileController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . Auth::user()->id,
             'current_password' => 'nullable|required_with:new_password',
             'new_password' => 'nullable|min:8|max:12|required_with:current_password',
-            'password_confirmation' => 'nullable|min:8|max:12|required_with:new_password|same:new_password'
+            'confirm_password' => 'nullable|min:8|max:12|required_with:new_password|same:new_password'
         ]);
 
 
@@ -75,6 +76,21 @@ class ProfileController extends Controller
         $user->email = $request->input('email');
         $user->alamat = $request->input('alamat');
         $user->no_hp = $request->input('no_hp');
+
+        // echo "console.log('".$request->input('current_password')."');";
+        // dd($request->input('current_password'));
+
+        if (!is_null($request->input('current_password'))) {
+            if (Hash::check($request->input('current_password'), $user->password)) {
+                if($request->input('new_password') == $request->input('confirm_password')) {
+                    $user->password = $request->input('new_password');
+                } else {
+                    return redirect()->back()->withErrors(['password' => 'New password and confirm password do not match.'])->withInput();
+                }
+            } else {
+                return redirect()->back()->withErrors(['password' => 'New password and confirm password do not match.'])->withInput();
+            }
+        }
 
         $user->save();
 
