@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="{{ asset('asset/style.css') }}">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
-@if($item->id==null)
+@if($item==null)
 <div class="container mt-5">
 
 
