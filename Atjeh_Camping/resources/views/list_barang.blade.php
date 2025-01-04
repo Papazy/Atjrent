@@ -74,7 +74,7 @@
     use Carbon\Carbon;
 
     // Mendapatkan selisih hari dari $item->tanggal_mulai dan $item->tanggal_selesai
-    $totalHari = Carbon::parse($tanggal_mulai)->diffInDays(Carbon::parse($tanggal_selesai)) + 1; // Tambahkan 1 jika ingin inklusif (termasuk tanggal mulai dan selesai));
+    $totalHari = Carbon::parse($tanggal_mulai)->diffInDays(Carbon::parse($tanggal_selesai)); // Tambahkan 1 jika ingin inklusif (termasuk tanggal mulai dan selesai));
     $jumlahHarga = $barangs->sum(function ($item) {
     return $item->barang->harga * $item->stok_barang;
     });
