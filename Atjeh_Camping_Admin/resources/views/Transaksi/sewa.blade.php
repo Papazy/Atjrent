@@ -46,7 +46,7 @@
                             <td>{{ $data->user->no_hp }}</td>
                             <td>{{ $data->nama_keranjang }}</td>
                             <td>{{  \Carbon\Carbon::parse($data->tanggal_mulai)->format('d M Y') . " - " . \Carbon\Carbon::parse($data->tanggal_selesai)->format('d M Y') }}</td>
-                            <td>Rp {{ number_format($data->harga_total * (abs(\Carbon\Carbon::parse($data->tanggal_mulai)->diffInDays(\Carbon\Carbon::parse($data->tanggal_selesai)))), 0, ',', '.') }}</td>
+                            <td>Rp {{ number_format($data->ongkir+$data->harga_total * (abs(\Carbon\Carbon::parse($data->tanggal_mulai)->diffInDays(\Carbon\Carbon::parse($data->tanggal_selesai)))), 0, ',', '.')  }}</td>
                             {{-- Jumlah hari --}}
 
 
