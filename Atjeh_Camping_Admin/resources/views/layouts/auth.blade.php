@@ -1,53 +1,94 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>{{ config('app.name', 'E-LABORATORY UINAR') }}</title>
-
-    <!-- Fonts -->
-    <link href="{{ url('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-    
-    <!-- Styles -->
-    <link href="{{ url('css/sb-admin-2.min.css') }}" rel="stylesheet">
-    <link href="{{ url('css/auth.css') }}" rel="stylesheet">
-
-    <!-- Favicon -->
-    <link href="{{ url('img/logo-img.png') }}" rel="icon" type="image/png">
-
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ATJEH CAMPING RENT</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"/>
     <style>
-        
-    </style>
-</head>
-<body class="">
+        body {
+          background-color: #f8f9fa;
+        }
+        .signup-form {
+          margin-top: 10px;
 
-    <main>
-        <div class="row" style="margin:0;">
-            <div class="col-lg-4 bg-white text-center d-flex align-items-center justify-content-center" style="height: 100vh;">
-                
-                <div class="" style="width: 100%;">
+          height: 97vh;
+        }
+        .welcome-section {
+          background-image: url("asset/img/bg.png"); /* Replace with your image URL */
+          background-size: cover;
 
-                    @yield('main-content')
-                    
-                </div>
+        color: #ffffff;
+        text-align: center;
 
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        border-radius: 20px;
+        }
+        .welcome-text {
+          font-style: normal;
+          font-family:Black Ops One, serif;
+          color: #3d6945;
+          font-size: 6rem;
+          font-weight: 100;
+          text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+        }
+        .subtext {
+          font-family:Black Ops One;
+          font-size: 1.5rem;
+          font-weight: 500;
+          text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.5);
+        }
+        .form-control-icon {
+          position: relative;
+        }
+        .form-control-icon input {
+          padding-left: 2.5rem;
+        }
+        .form-control-icon i {
+          position: absolute;
+          top: 50%;
+          left: 10px;
+          transform: translateY(-50%);
+          color: #6c757d;
+        }
+        .input-group{
+          color: #F2A01C;
+          column-rule-color: #F2A01C;
+
+        }
+      </style>
+  </head>
+<!----------------------- Main Container -------------------------->
+<div class="container g-1 d-flex justify-content-center align-items-center min-vh-100">
+<!----------------------- Login Container -------------------------->
+<div class="row border rounded-4 p-3 s bg-white shadow box-area">
+<!--------------------------- Left Box ----------------------------->
+    <div class="col-md-3 p-4 left-box border shadow rounded-4">
+         <div class="row align-items-center">
+            <div class="text-center mb-2">
+                <img src="asset/img/logo atjeh camp.png" alt="Logo" width="70" />
+                <h3 class="mt-2" style="font-size: medium;font-family: Arial, Helvetica, sans-serif; color: #F2A01C;">ATJEH CAMPING RENT</h3>
             </div>
-            <div class="col-lg-8  d-flex align-items-center justify-content-center" style="background-color: #021C60; ">
-                <img class="d-none d-lg-block" src="{{ url('img/e-lab-logo.png') }}" alt="" style="width: 50%">
-            </div>
+            @yield('main-content')
+
+                                                <!-- button -->
+
+
         </div>
-    </main>
-        
+    </div>
+    <!-------------------- ------ Right Box ---------------------------->
+        <div class="col-md-9 welcome-section align-items-start ">
+        <div class="welcome-text">WELCOME</div>
+        <div class="subtext">Your Adventure Starts Here</div>
+    </div>
+  </div>
+</div>
 
-<!-- Scripts -->
-<script src="{{ url('vendor/jquery/jquery.min.js') }}"></script>
-<script src="{{ url('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
-<script src="{{ url('js/sb-admin-2.min.js') }}"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
+  </body>
 </html>

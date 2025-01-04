@@ -23,7 +23,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    // jika ada user maka arahkan ke /home
+    if (Auth::check()) {
+        return redirect('/home');
+    }else{
+        return redirect('/login');
+    }
 });
 
 Auth::routes();
