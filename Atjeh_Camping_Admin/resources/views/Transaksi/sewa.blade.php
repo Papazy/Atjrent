@@ -46,12 +46,24 @@
                             <td>{{ $data->user->no_hp }}</td>
                             <td>{{ $data->nama_keranjang }}</td>
                             <td>{{  \Carbon\Carbon::parse($data->tanggal_mulai)->format('d M Y') . " - " . \Carbon\Carbon::parse($data->tanggal_selesai)->format('d M Y') }}</td>
-                            <td>Rp {{ number_format($data->harga_total, 0, ',', '.') }}</td>
+                            <td>Rp {{ number_format($data->harga_total * abs(\Carbon\Carbon::parse($data->tanggal_mulai)->diffInDays(\Carbon\Carbon::parse($data->tanggal_selesai))), 0, ',', '.') }}</td>
                             {{-- Jumlah hari --}}
 
 
 
-                            <td>{{ $data->status }}</td>
+                            <td>
+                                @if($data->status == 'pending' && $data->tanggal_mulai >=  \Carbon\Carbon::now())
+                                <button class="btn btn-warning me-2">Pending</button>
+                                @elseif($data->status == 'pending' && $data->tanggal_mulai < \Carbon\Carbon::now())
+                                <button class="btn btn-danger me-2">Kedaluwarsa</button>
+                                @elseif($data->status == 'terbayar')
+                                <button class="btn btn-success me-2">Dibayar</button>
+                                @elseif($data->status == 'dikembalikan')
+                                <button class="btn btn-secondary me-2" style="font-size:14px">Dikembalikan</button>
+                                @else
+                                <button class="btn btn-warning me-2">Pending</button>
+                                @endif
+                            </td>
                             <td>
                                 <a href={{ "sewa/".$data->id }} type="button" class="btn btn-info" >Detail</a>
                             </td>

@@ -35,6 +35,18 @@ class SewaController extends Controller
         $rent->status = $status;
         $rent->save();
 
+        if($status == 'dikembalikan'){
+            foreach ($rent->details as $detail) {
+                $detail->barang->stok_barang += $detail->stok_barang;
+                $detail->barang->save();
+            }
+        }else if($status == 'terbayar'){
+            foreach ($rent->details as $detail) {
+                $detail->barang->stok_barang -= $detail->stok_barang;
+                $detail->barang->save();
+            }
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Status berhasil diperbarui',

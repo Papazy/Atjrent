@@ -15,6 +15,7 @@ class JualController extends Controller
           $category = $request->input('category'); // Filter kategori
           $minPrice = $request->input('min_price'); // Filter harga minimum
           $maxPrice = $request->input('max_price'); // Filter harga maksimum
+          $q = $request->input('q');
 
           // Query dasar untuk barang yang disewa
           $query = Barang::where('is_jual', 'Jual');
@@ -33,6 +34,11 @@ class JualController extends Controller
           if ($maxPrice) {
               $query->where('harga', '<=', $maxPrice);
           }
+
+            // Filter berdasarkan pencarian
+            if ($q) {
+                $query->where('nama', 'like', "%$q%");
+            }
 
           // Ambil data yang sudah difilter
           $data = $query->latest()->get();
@@ -141,7 +147,8 @@ class JualController extends Controller
     public function viewCart()
     {
         // mendapatkan belanja user dari database
-        $cart = Jual::with('barang')->where('users_id', Auth::user()->id)->get();
+        $cart = Jual::with('barang')->where('users_id', Auth::user()->id)->where('status', 'pending')->get();
+
         return view('detail_belanja', compact('cart'));
     }
 
@@ -167,6 +174,11 @@ class JualController extends Controller
                 'message' => 'Gagal menghapus data!',
             ], 500);
         }
+    }
+
+    public function history(){
+        $items = Jual::where('users_id', Auth::user()->id)->latest()->get();
+        return view('riwayat', compact('items'));
     }
 
 

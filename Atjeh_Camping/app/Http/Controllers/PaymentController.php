@@ -43,15 +43,26 @@ class PaymentController extends Controller
             ],
         ];
 
-
-
-
-
+        $barangTidakCukup = collect();
         try {
             $snapToken = Snap::getSnapToken($params);
             if($tipeTransaksi == 'sewa'){
-                // handle image
-                // dd($request->all());
+
+                $rent = Rent::where('id', $request->rent_id)->first();
+
+                foreach($rent->details as $detail){
+                    if($detail->barang->stok_barang < $detail->stok_barang){
+                        $barangTidakCukup->push([
+                            'nama' => $detail->barang->nama,
+                            'stok_tersedia' => $detail->barang->stok_barang,
+                            'stok_dibutuhkan' => $detail->stok_barang
+                        ]);
+                    }
+                }
+                if($barangTidakCukup->count() > 0){
+                    throw new \Exception('Stok barang tidak mencukupi');
+                }
+
                 $image = $request->image;
 
                 $response = Http::attach(
@@ -63,8 +74,6 @@ class PaymentController extends Controller
                     ]);
 
                     if($response->successful()){
-                        // get image url
-                        // $imageUrl = $response->json()['path'];
                     }else{
                         // throw error
                         dd($response);
@@ -72,23 +81,44 @@ class PaymentController extends Controller
                         throw new \Exception('Failed to upload image');
                     }
 
-                $rent = Rent::where('id', $request->rent_id)->first();
-                $rent->status = 'Terbayar';
+
+                $rent->status = 'terbayar';
                 $rent->snap_token = $snapToken;
+                $rent->ongkir = $request->ongkir;
+                $rent->lokasi_pengambilan = $request->lokasi_pengambilan;
                 $rent->save();
+
+                foreach($rent->details as $detail){
+                    $detail->barang->stok_barang -= $detail->stok_barang;
+                    $detail->barang->save();
+                }
 
             }else{
                 $jual = Jual::where('id', $request->rent_id)->first();
-                $jual->status = 'Diproses';
+
+                if($jual->barang->stok_barang < $jual->stok_barang){
+                    $barangTidakCukup->push([
+                        'nama' => $jual->barang->nama,
+                        'stok_tersedia' => $jual->barang->stok_barang,
+                        'stok_dibutuhkan' => $jual->stok_barang
+                    ]);
+                    throw new \Exception('Stok barang tidak mencukupi');
+                }
+
+                $jual->status = 'terbayar';
+                $jual->ongkir = $request->ongkir;
+                $jual->lokasi_pengambilan = $request->lokasi_pengambilan;
                 $jual->snap_token = $snapToken;
                 $jual->save();
+
+                $jual->barang->stok_barang -= $jual->stok_barang;
             }
 
             return response()->json(['snap_token' => $snapToken]);
         } catch (\Exception $e) {
-            dd($e->getMessage());
-            echo "console.log('Error occured:',". $e->getMessage().");";
-            return response()->json(['error' => $e->getMessage()]);
+            // dd($e->getMessage());
+            // echo "console.log('Error occured:',". $e->getMessage().");";
+            return response()->json(['error' => $e->getMessage(), 'barangTidakCukup' => $barangTidakCukup]);
         }
     }
 }

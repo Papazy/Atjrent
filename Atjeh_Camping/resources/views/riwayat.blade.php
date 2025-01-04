@@ -4,41 +4,43 @@
 
 <div class="container mt-5">
 
-    <!-- Rental Cards -->
+  {{-- Menampilkan history pembelian dalam table --}}
     <div class="row">
-      <!-- Single Card -->
-      <div class="col-12">
-        <div
-          class="rental-card d-flex align-items-center justify-content-between"
-        >
-          <div class="d-flex">
-            <h6 class="my-2 me-3" style="color: #f4a261">
-              Camp To Seulawah
-            </h6>
-            <div class="tanggal d-flex">
-              <small class="text-muted me-3"
-                >17 Mei 2025 - Mulai Sewa</small
-              >
-              <small class="text-muted me-3"
-                >19 Mei 2025 - Akhir Sewa</small
-              >
-              <small class="price">200.000</small>
-            </div>
-          </div>
-          <div class="d-flex align-items-center">
-            <button class="btn btn-edit me-2">Ubah sewa</button>
-            <button class="btn btn-custom">Pilih Keranjang</button>
-            <i
-              class="hapus fas fa-map-marker-alt mx-2"
-              style="color: #e63946"
-            ></i>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+        <h5 style="color:  #ffc107">RIWAYAT PEMBELIAN</h5>
+        <table class="table table-striped">
+        <thead>
+            <tr>
+            <th scope="col">No</th>
+            <th scope="col">Nama Barang</th>
+            <th scope="col">Jumlah Barang</th>
+            <th scope="col">Status</th>
+            <th scope="col">Lokasi Pengambilan</th>
+            <th scope="col">Total Harga</th>
+            <th scope="col">Tanggal Pembelian</th>
+            </tr>
+        </thead>
+        <tbody>
+            @php
+            use Carbon\Carbon;
+            @endphp
+            @foreach ($items as $item)
+            <tr>
+            <th scope="row">{{ $loop->iteration }}</th>
+            <td>{{ $item->barang->nama }}</td>
+            <td>{{ $item->stok_barang }}</td>
+            <td>
+                <button class="btn btn-success me-2 " style="font-size:14px">Terbayar</button>
+            </td>
+            <td>{{ $item->lokasi_pengambilan }}</td>
+            <td>{{ $item->harga_total + $item->ongkir }}</td>
+            <td>{{ date('d F Y', strtotime($item->created_at)) }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+        </table>
+        <div class=""></div>
+</div>
 
 
-    
-  
+
 @endsection

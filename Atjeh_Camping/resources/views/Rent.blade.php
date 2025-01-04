@@ -475,7 +475,7 @@
             $.ajax({
               type: "GET",
               url: `{{ url('/rent/barang-ajax/${barangs_id}') }}`,
-              cache: false,
+              cache: false, 
               success: function (response) {
                 $('#namabarang').val(response.data.nama);
                 $('#id_barang').val(response.data.id);

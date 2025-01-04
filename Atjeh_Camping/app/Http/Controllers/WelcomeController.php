@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Barang;
+use Illuminate\Http\Request;
 
 class WelcomeController extends Controller
 {
@@ -19,5 +20,12 @@ class WelcomeController extends Controller
     {
         $datawelcome = Barang::all(); // Ambil datawelcome dari tabel barang
         return response()->json(['datawelcome' => $datawelcome], 200); // Kirimkan data sebagai JSON
+    }
+
+    public function search(Request $request)
+    {
+        // mendapatkan query parameter dari q
+        $barang = Barang::where('nama', 'like', "%$request->q%")->get();
+        return response()->json($barang);
     }
 }

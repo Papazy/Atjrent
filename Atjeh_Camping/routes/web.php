@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JualController;
 use App\Http\Controllers\RentController;
@@ -55,4 +56,8 @@ Route::get('/riwayat', function () {
 Route::put('/profile', [ProfileController::class, 'updateProfile'])->name('profile.update');
 // HHari ini
 
+Route::get('/history_belanja', [JualController::class, 'history'])->name('history');
+
 Route::post('/payment/{tipeTransaksi}/{amount}', [PaymentController::class, 'processPayment']);
+
+Route::get('/search', [WelcomeController::class, 'search'])->name('search');

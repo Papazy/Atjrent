@@ -20,6 +20,9 @@ class RentController extends Controller
         $minPrice = $request->input('min_price'); // Filter harga minimum
         $maxPrice = $request->input('max_price'); // Filter harga maksimum
 
+        $q = $request->input('q');
+
+
         // Query dasar untuk barang yang disewa
         $query = Barang::where('is_jual', 'Sewa');
 
@@ -37,6 +40,13 @@ class RentController extends Controller
         if ($maxPrice) {
             $query->where('harga', '<=', $maxPrice);
         }
+
+        // Filter berdasarkan pencarian
+        if ($q) {
+            $query->where('nama', 'like', "%$q%");
+        }
+
+
 
         // Ambil data yang sudah difilter
         $data = $query->latest()->get();

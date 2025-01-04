@@ -8,6 +8,9 @@
   <div class="row">
     <h5 style="color:  #ffc107">LIST KERANJANG</h5>
     <!-- Single Card -->
+    @php
+        use Carbon\Carbon;
+        @endphp
     @foreach ($keranjang as $item)
     <div class="col-12">
       <div class="rental-card d-flex align-items-center justify-content-between">
@@ -23,17 +26,20 @@
         </div>
 
         <!-- Aksi -->
+
         <div class="d-flex align-items-center">
-            @if($item->status == 'pending')
+            @if($item->status == 'pending' && $item->tanggal_mulai >=  Carbon::now())
           <a href="{{ url('/rent/keranjang-detail/'.$item->id) }}" class="btn btn-edit me-2">Bayar</a>
           <button class="btn btn-warning me-2">Pending</button>
+          @elseif($item->status == 'pending' && $item->tanggal_mulai < Carbon::now())
+          <a href="{{ url('/rent/keranjang-detail/'.$item->id) }}" class="btn btn-edit me-2">Detail</a>
+          <button class="btn btn-danger me-2">kedaluwarsa</button>
           @elseif($item->status == 'terbayar')
           <a href="{{ url('/rent/keranjang-detail/'.$item->id) }}" class="btn btn-edit me-2">Detail</a>
             <button class="btn btn-success me-2">Dibayar</button>
           @elseif($item->status == 'dikembalikan')
           <a href="{{ url('/rent/keranjang-detail/'.$item->id) }}" class="btn btn-edit me-2">Detail</a>
-            <button class="btn btn-success me-2">Dikembalikan</button>
-
+          <button class="btn btn-success me-2" style="font-size:14px">dikembalikan</button>
           @endif
         </div>
       </div>

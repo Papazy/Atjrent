@@ -591,6 +591,7 @@ body {
                 >
                   <input
                     type="text"
+                    id="search"
                     class="form-control search-input"
                     placeholder="Cari Disini"
                     style="border-radius: 50px; padding-left: 15px;"
@@ -600,6 +601,11 @@ body {
                     style="position: absolute; right: 15px; color: #aaa;"
                   ></i>
                 </div>
+                
+                {{-- Menampilkan list barang --}}
+                <div class="list-group" id="list-barang" style="position: absolute; z-index: 1000; width:35%; display: none;">
+                </div>
+
               </div>
             </div>
           </div>
@@ -675,6 +681,13 @@ body {
                   >Detail Belanja</a
                 >
               </li>
+              <li>
+                <a
+                  class="dropdown-item custom-dropdown-item"
+                  href="{{ url('/history_belanja') }}"
+                >Riwayat Beli</a
+                >
+              </li>
 
             </ul>
           </div>
@@ -715,6 +728,59 @@ body {
     <script src="{{ url('js/sb-admin-2.min.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search');
+    const listBarang = document.getElementById('list-barang');
+    // Sembunyikan listBarang saat input kehilangan fokus
+    searchInput.addEventListener('blur', function() {
+            // Gunakan timeout untuk memungkinkan klik pada listBarang
+            setTimeout(() => {
+                listBarang.style.display = 'none';
+            }, 200);
+        });
+
+         // Tampilkan listBarang saat input mendapatkan fokus dan ada nilai
+         searchInput.addEventListener('focus', function() {
+            if (searchInput.value.trim() !== '') {
+                listBarang.style.display = 'block';
+            }
+        });
+        // Mematikan listBarang saat klik di luar listBarang
+    searchInput.addEventListener('input', function(){
+        if(searchInput.value == ''){
+        listBarang.style.display = 'none';
+    }else{
+
+        fetch(`{{ url('/search') }}?q=${searchInput.value}`)
+        .then(response => response.json())
+        .then(data => {
+            listBarang.innerHTML = '';
+            data.forEach(barang => {
+                const listItem = document.createElement('a');
+                listItem.classList.add('list-group-item', 'list-group-item-action');
+                listItem.href = '#';
+                listItem.innerHTML = `
+                <a href="${barang.is_jual == 'jual' ? '{{ url("/sale") }}' : '{{ url("/rent") }}'}?q=${barang.nama}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                <h6 class="mb-1">${barang.nama}</h6>
+                <small>Rp. ${parseInt(barang.harga).toLocaleString('id-ID')}</small>
+                </div>
+                <div class="d-flex w-100 justify-content-between mb-1">
+                <small>${barang.merk}</small>
+                <small>${barang.is_jual == 'jual' ? 'Jual' : 'Sewa'}</small>
+                </div>
+                </a>
+                `;
+                listBarang.appendChild(listItem);
+            });
+            listBarang.style.display = 'block';
+        });
+    }
+    });
+
+});
+    </script>
     @include('modal.keranjang')
     @stack('scripts')
   </body>

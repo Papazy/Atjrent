@@ -6,6 +6,27 @@
 
 
 <div class="container mt-5">
+    {{-- Modal Error --}}
+    <!-- Button trigger modal -->
+
+  <!-- Modal Error -->
+  <div class="modal fade" style="background-color: rgba(0,0,0,0.5);" tabindex="-1" id="errorByStokModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Error</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <h5 style="color:  #ffc107">LIST BARANG</h5>
   <div class="row">
     <!-- Cart Table -->
@@ -255,6 +276,7 @@
           @endif
 
 
+
           @endsection
 
 
@@ -273,6 +295,10 @@
           <script>
               // JavaScript to toggle visibility of kabupaten dropdown
               document.addEventListener('DOMContentLoaded', function() {
+
+
+
+                let lokasi_pengambilan = 'Basecamp Atjeh Camping';
 
                   // Handle Button payment on upload file
                   const fileInput = document.getElementById('uploadKtp');
@@ -301,12 +327,14 @@
                   let totalPesanan = document.getElementById('total-pesanan').textContent.replaceAll('.', '');
                   const sumTotal = parseInt(selectedOption.getAttribute('data-amount')) + parseInt(totalPesanan);
                  ongkirValue.innerHTML =parseInt(selectedOption.getAttribute('data-amount')).toLocaleString('id-ID');
+                 lokasi_pengambilan = selectedOption.value;
                   document.getElementById('total-payment').innerHTML = sumTotal.toLocaleString('id-ID')
                   localStorage.setItem('totalPayment', sumTotal);
                 }
               });
 
-              // Handle FETCH Midtrans
+
+              const errorByStokModal = new bootstrap.Modal(document.getElementById('errorByStokModal'));
 
               const payButton = document.getElementById("paybutton");
               payButton.addEventListener('click', function() {
@@ -314,6 +342,8 @@
                 const totalPayment = localStorage.getItem('totalPayment')
                 const formData = new FormData();
                 formData.append('amount', totalPayment);
+                formData.append('ongkir', parseInt(ongkirValue.textContent.replace("Rp. ", "").replace(/\./g, ""),10));
+                formData.append('lokasi_pengambilan', lokasi_pengambilan);
                 formData.append('rent_id', {{ $keranjang_id }});
                 formData.append('image', document.getElementById('uploadKtp').files[0]);
                 fetch('/payment/sewa/' + totalPayment, {
@@ -326,7 +356,32 @@
                   })
                   .then(response => response.json())
                   .then(data => {
-                    snap.pay(data.snap_token);
+                    if(data.error){
+                        const modalBody = document.querySelector('#errorByStokModal .modal-body');
+                        modalBody.innerHTML = '<h5>Barang tidak cukup</h5>';
+
+                        const listBarang = document.createElement('ul');
+                        listBarang.classList.add('list-group');
+
+                        if(data.barangTidakCukup && data.barangTidakCukup.length > 0){
+                            data.barangTidakCukup.forEach(barang => {
+                                const listItem = document.createElement('li');
+                                listItem.classList.add('list-group-item');
+                                listItem.textContent = `${barang.nama}: Dibutuhkan ${barang.stok_dibutuhkan}, Tersedia ${barang.stok_tersedia} unit`;
+                                listBarang.appendChild(listItem);
+                            })
+                            modalBody.appendChild(listBarang);
+                            modalBody.innerHTML += '<p style="font-size:10px; margin-top:6px;">*Harap hapus barang yang tidak cukup dan pilih kembali dengan stok yang ada</p>';
+
+
+                        }else{
+                            modalBody.textContent = data.error;
+                        }
+
+                        errorByStokModal.show();
+                    }else{
+                        snap.pay(data.snap_token);
+                    }
                   });
               })
 
@@ -341,6 +396,7 @@
                   let totalHarga = {{ $totalHarga }}
                   ongkirValue.innerHTML = 0;
                   document.getElementById('total-payment').innerHTML = totalHarga.toLocaleString('id-ID');
+                  lokasi_pengambilan = 'Basecamp Atjeh Camping';
                 } else {
                   kabupatenDropdown.style.display = 'block';
                 }
@@ -423,61 +479,4 @@
                 }
               });
             }
-
-            //   $('table').on('click', '.btn-delete', function () {
-            //     let dataId = $(this).data('id'); // Ambil ID data dari atribut tombol
-            //     let token = $("meta[name='csrf-token']").attr("content"); // Ambil CSRF token dari meta tag
-            //     console.log(ok);
-
-            //     Swal.fire({
-            //         icon: 'warning',
-            //         title: 'Apakah Kamu Yakin?',
-            //         text: "Ingin menghapus data ini!",
-            //         showCancelButton: true,
-            //         cancelButtonText: 'TIDAK',
-            //         confirmButtonText: 'YA, HAPUS!'
-            //     }).then((result) => {
-            //         if (result.isConfirmed) {
-            //             $.ajax({
-            //                 url: `/checkout/list_barang/destroy/${dataId}`, // Sesuaikan URL dengan route
-            //                 type: "DELETE",
-            //                 data: {
-            //                     _token: token // Kirimkan CSRF token
-            //                 },
-            //                 success: function (response) {
-            //                     if (response.status === 'success') {
-            //                         Swal.fire({
-            //                             icon: 'success',
-            //                             title: 'Berhasil!',
-            //                             text: response.message,
-            //                             showConfirmButton: false,
-            //                             timer: 3000
-            //                         });
-
-            //                         // Hapus baris dari tabel
-            //                         $(`button[data-id="${dataId}"]`).closest('tr').remove();
-            //                     } else {
-            //                         Swal.fire({
-            //                             icon: 'error',
-            //                             title: 'Gagal!',
-            //                             text: response.message,
-            //                             showConfirmButton: false,
-            //                             timer: 3000
-            //                         });
-            //                     }
-            //                 },
-            //                 error: function (xhr) {
-            //                     Swal.fire({
-            //                         icon: 'error',
-            //                         title: 'Error!',
-            //                         text: 'Terjadi kesalahan saat menghapus data!',
-            //                         showConfirmButton: false,
-            //                         timer: 3000
-            //                     });
-            //                 }
-            //             });
-            //         }
-            //   });
-            //   });
-
           </script>

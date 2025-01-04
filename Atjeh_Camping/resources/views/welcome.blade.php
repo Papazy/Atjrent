@@ -298,13 +298,17 @@
               <div class="box">
                 <input type="checkbox" id="check" />
                 <div class="search-box">
-                  <input type="text" placeholder="Type here..." style="color: black" />
+                  <input type="text" placeholder="Type here..." style="color: black" id="search"/>
                   <label for="check" class="icon">
                     <i class="fas fa-search"></i>
                   </label>
+                  {{-- Menampilkan list barang --}}
+                  <div class="list-group" id="list-barang" style="position: absolute;border-radius:25px; z-index: 1000; width:100%; display: none;">
+                 </div>
                 </div>
-              </div>
-            </li>
+            </div>
+        </li>
+
 
         </ul>
         @if(Auth::user())
@@ -466,6 +470,59 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+const searchInput = document.getElementById('search');
+const listBarang = document.getElementById('list-barang');
+// Sembunyikan listBarang saat input kehilangan fokus
+searchInput.addEventListener('blur', function() {
+        // Gunakan timeout untuk memungkinkan klik pada listBarang
+        setTimeout(() => {
+            listBarang.style.display = 'none';
+        }, 200);
+    });
+
+     // Tampilkan listBarang saat input mendapatkan fokus dan ada nilai
+     searchInput.addEventListener('focus', function() {
+        if (searchInput.value.trim() !== '') {
+            listBarang.style.display = 'block';
+        }
+    });
+    // Mematikan listBarang saat klik di luar listBarang
+searchInput.addEventListener('input', function(){
+    if(searchInput.value == ''){
+    listBarang.style.display = 'none';
+}else{
+
+    fetch(`{{ url('/search') }}?q=${searchInput.value}`)
+    .then(response => response.json())
+    .then(data => {
+        listBarang.innerHTML = '';
+        data.forEach(barang => {
+            const listItem = document.createElement('a');
+            listItem.classList.add('list-group-item', 'list-group-item-action');
+            listItem.href = '#';
+            listItem.innerHTML = `
+            <a href="${barang.is_jual == 'jual' ? '{{ url("/sale") }}' : '{{ url("/rent") }}'}?q=${barang.nama}" class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+            <h6 class="mb-1">${barang.nama}</h6>
+            <small>Rp. ${parseInt(barang.harga).toLocaleString('id-ID')}</small>
+            </div>
+            <div class="d-flex w-100 justify-content-between mb-1">
+            <small>${barang.merk}</small>
+            <small>${barang.is_jual == 'jual' ? 'Jual' : 'Sewa'}</small>
+            </div>
+            </a>
+            `;
+            listBarang.appendChild(listItem);
+        });
+        listBarang.style.display = 'block';
+    });
+}
+});
+
+});
+</script>
   <script>
     $('.owl-carousel').owlCarousel({
       loop: false
