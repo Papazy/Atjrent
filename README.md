@@ -143,11 +143,11 @@ Buka 2 Terminal, (untuk client dan admin).
 - [x] Pembayaran
    - [x] Integrasi Midtrans
    - [x] Update status setelah pembayaran berhasil
-- [] Notifikasi Email setelah transaksi
+- [ ] Notifikasi Email setelah transaksi
 - [x] Profile
    - [x] Update Profile
    - [x] Fix bug style
-- [] Update Stok setiap transaksi dilakukan atau pengembalian barang
+- [x] Update Stok setiap transaksi dilakukan atau pengembalian barang
 - [x] Membuat Observers
    - [x] Observer Pemantauan Jumlah Harga Keranjang
 
