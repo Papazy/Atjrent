@@ -16,7 +16,7 @@ class SewaController extends Controller
     }
     public function index()
     {
-        $rents = Rent::with('user')->get();
+        $rents = Rent::with('user')->latest()->get();
         // var_dump($rents[1]->user->name);
         return view('transaksi.sewa', compact('rents'));
     }

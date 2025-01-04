@@ -51,7 +51,7 @@
                                 <td>{{ $data->user->name }}</td>
                                 <td>{{ $data->barangs[0]->nama }}</td>
                                 <td>{{ $data->stok_barang }}</td>
-                                <td>{{ $data->harga_total }}</td>
+                                <td>Rp. {{ number_format($data->harga_total + $data->ongkir,0,',','.') }}</td>
                                 <td>{{ $data->created_at->format('d M Y, H:i') }}</td>
                                 <td><a href={{ "jual/".$data->id }} type="button" class="btn btn-info" >Detail</a></td>
                             </tr>

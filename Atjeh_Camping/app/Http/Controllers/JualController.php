@@ -147,9 +147,9 @@ class JualController extends Controller
     public function viewCart()
     {
         // mendapatkan belanja user dari database
-        $cart = Jual::with('barang')->where('users_id', Auth::user()->id)->where('status', 'pending')->get();
+        $item = Jual::with('barang')->where('users_id', Auth::user()->id)->where('status', 'pending')->latest()->first();
 
-        return view('detail_belanja', compact('cart'));
+        return view('detail_belanja', compact('item'));
     }
 
     public function destroy($id)

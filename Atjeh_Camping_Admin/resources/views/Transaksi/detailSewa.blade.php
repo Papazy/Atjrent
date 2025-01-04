@@ -73,6 +73,10 @@
                 <td>: {{ $rent->nama_keranjang }}</td>
               </tr>
               <tr>
+                <td><strong>Lokasi Pengambilan</strong></td>
+                <td>: {{ $rent->lokasi_pengambilan }}</td>
+              </tr>
+              <tr>
                 <td><strong>Tanggal Mulai</strong></td>
                 <td>: {{ $rent->tanggal_mulai }}</td>
               </tr>
@@ -149,10 +153,16 @@
                       {{ $diff }} hari
                     </th>
                   </tr>
+                  <tr>
+                    <th colspan="5" class="text-right">Ongkos Kirim </th>
+                    <th>
+                      Rp. {{ number_format($rent->ongkir, 0,',','.') }}
+                    </th>
+                  </tr>
                     <tr>
                         <th colspan="5" class="text-right">Total Harga</th>
                         <th>
-                        Rp{{ number_format($rent->details->sum(fn($d) => $d->barang->harga * $d->stok_barang) * $diff, 0, ',', '.') }}
+                        Rp{{ number_format($rent->harga_total* $diff + $rent->ongkir, 0, ',', '.') }}
                         </th>
                     </tr>
                 </tfoot>

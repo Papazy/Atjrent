@@ -391,7 +391,14 @@
                         snap.pay(data.snap_token, {
                             // jika succes arah kan ke /history_belanja
                             onSuccess: function(result){
-                                location.reload();
+                                formData.append('snap_token', data.snap_token);
+                                fetch(`/payment/confirm/rent/{{ $keranjang_id }}`, {
+                            method: "POST",
+                            headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" },
+                            body: formData,
+                        })
+                            .then((response) => response.json())
+                            .then((dataa) => {console.log(dataa); location.reload()});
                             },
                         });
                     }

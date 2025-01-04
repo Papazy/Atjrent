@@ -16,7 +16,7 @@ class JualController extends Controller
     public function index()
    {
 
-    $all_data =  Jual::with(['user', 'barangs'])->get();
+    $all_data =  Jual::with(['user', 'barangs'])->latest()->get();
     // var_dump($all_data[0]->barangs[0]->nama);
     return view('transaksi.jual', compact('all_data'));
    } //

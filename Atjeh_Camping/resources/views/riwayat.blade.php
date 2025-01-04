@@ -32,7 +32,7 @@
                 <button class="btn btn-success me-2 " style="font-size:14px">Terbayar</button>
             </td>
             <td>{{ $item->lokasi_pengambilan }}</td>
-            <td>{{ $item->harga_total + $item->ongkir }}</td>
+            <td>Rp. {{ number_format($item->harga_total + $item->ongkir, 0, ",", ".") }}</td>
             <td>{{ date('d F Y', strtotime($item->created_at)) }}</td>
             </tr>
             @endforeach

@@ -59,5 +59,6 @@ Route::put('/profile', [ProfileController::class, 'updateProfile'])->name('profi
 Route::get('/history_belanja', [JualController::class, 'history'])->name('history');
 
 Route::post('/payment/{tipeTransaksi}/{amount}', [PaymentController::class, 'processPayment']);
+Route::post('/payment/confirm/{tipeTransaksi}/{id}', [PaymentController::class, 'confirmPayment']);
 
 Route::get('/search', [WelcomeController::class, 'search'])->name('search');

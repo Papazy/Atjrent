@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="{{ asset('asset/style.css') }}">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
-@if($cart->isEmpty())
+@if($item->id==null)
 <div class="container mt-5">
 
 
@@ -60,10 +60,10 @@
             </thead>
             <tbody>
 
-              @foreach ($cart as $item)
+              {{-- @foreach ($item as $item) --}}
               @php
               $total_price += $item->barang->harga * $item->stok_barang;
-              @endphp
+            //   @endphp
               <tr>
                 <td><img src="{{ env('APP_ASSET') . $item->barang->image_url }}" class="img-thumbnail" alt="{{ $item['nama'] }}" width="50"></td>
                 <td>{{ $item->barang->nama }}</td>
@@ -77,7 +77,6 @@
 
                   </td>
               </tr>
-              @endforeach
             </tbody>
           </table>
         </table>
@@ -233,7 +232,7 @@
                         amount: totalPayment,
                         lokasi_pengambilan: lokasi_pengambilan,
                         ongkir: parseInt(ongkirValue.textContent.replace('Rp. ', '').replace(/\./g, ''), 10),
-              rent_id: {{ $cart[0]->id }}
+              rent_id: {{ $item->id }}
             , })
           })
           .then(response => response.json())
@@ -265,7 +264,20 @@
                         snap.pay(data.snap_token, {
                             // jika succes arah kan ke /history_belanja
                             onSuccess: function(result){
-                                window.location.href = '/history_belanja';
+
+                                fetch('/payment/confirm/jual/'+{{ $item->id }}, {
+                            method: "POST",
+                            headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}",  'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                amount: totalPayment,
+                                lokasi_pengambilan: lokasi_pengambilan,
+                                ongkir: parseInt(ongkirValue.textContent.replace('Rp. ', '').replace(/\./g, ''), 10),
+                                rent_id: {{ $item->id }},
+                                snap_token: data.snap_token,
+                            }),
+                        })
+                            .then((response) => response.json())
+                            .then((dataa) => {console.log(dataa); window.location.href = '/history_belanja';});
                             },
                         });
                     }
