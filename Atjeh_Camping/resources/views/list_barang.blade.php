@@ -230,13 +230,13 @@
           <div class="d-flex justify-content-between mb-1">
             <span class="text-muted">Lokasi Ambil</span>
             <div>
-              <span id="jumlah_hari">{{ number_format($totalHari, 0, ",", ".") }} hari</span>
+              <span id="jumlah_hari">{{ $rent->lokasi_pengambilan}}</span>
             </div>
           </div>
           <div class="d-flex justify-content-between mb-1">
             <span class="text-muted">Ongkir</span>
             <div>
-              <span id="jumlah_hari">{{ number_format($totalHari, 0, ",", ".") }} hari</span>
+              <span id="jumlah_hari">Rp. {{ number_format($rent->ongkir, 0, ",", ".") }}</span>
             </div>
           </div>
           <hr />
@@ -244,7 +244,7 @@
             <span class="text-muted">Total Harga</span>
             <div>
               Rp.
-              <span id="total-pesanan">{{ number_format($totalHarga, 0, ",", ".") }}</span>
+              <span id="total-pesanan">{{ number_format($totalHarga +$rent->ongkir, 0, ",", ".") }}</span>
             </div>
         </div>
     </div>
