@@ -255,7 +255,7 @@
                             modalBody.appendChild(listBarang);
                             // beri note agar menghapus barang yang tidak cukup dan pilih kembali dengan stok yang ada
                             modalBody.innerHTML += '<p style="font-size:10px; margin-top:6px;">*Harap hapus barang yang tidak cukup dan pilih kembali dengan stok yang ada</p>';
-                            \
+
                         }else{
                             modalBody.textContent = data.error;
                         }
