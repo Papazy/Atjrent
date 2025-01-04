@@ -262,7 +262,12 @@
 
                         errorByStokModal.show();
                     }else{
-                        snap.pay(data.snap_token);
+                        snap.pay(data.snap_token, {
+                            // jika succes arah kan ke /history_belanja
+                            onSuccess: function(result){
+                                window.location.href = '/history_belanja';
+                            },
+                        });
                     }
                   });
         })

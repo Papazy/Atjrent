@@ -246,8 +246,16 @@
               Rp.
               <span id="total-pesanan">{{ number_format($totalHarga, 0, ",", ".") }}</span>
             </div>
-          </div>
         </div>
+    </div>
+    {{-- Button terbayar atau terkembalikan --}}
+    @if($rent->status == 'terbayar')
+    <button class="btn btn-success float-right change-status" data-id="{{ $rent->id }}" data-status="dikembalikan">
+      <i class="fas fa-check" id="iconStatus"></i> Terbayar </button>
+    @elseif($rent->status == 'dikembalikan')
+    <button class="btn btn-secondary float-right change-status" data-id="{{ $rent->id }}" data-status="terbayar">
+        <i class="fas fa-check" id="iconStatus"></i>  Dikembalikan </button>
+    @endif
       </div>
     </div>
     @else
@@ -380,7 +388,12 @@
 
                         errorByStokModal.show();
                     }else{
-                        snap.pay(data.snap_token);
+                        snap.pay(data.snap_token, {
+                            // jika succes arah kan ke /history_belanja
+                            onSuccess: function(result){
+                                location.reload();
+                            },
+                        });
                     }
                   });
               })
