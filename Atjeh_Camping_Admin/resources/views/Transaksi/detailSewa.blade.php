@@ -43,16 +43,26 @@
     <div class="card shadow mb-4">
       <div class="card-header py-3">
         <h6 class="font-weight-bold text-primary">Informasi Transaksi</h6>
+        <button class="btn btn-danger float-right change-status-cancel mx-2" data-id="{{ $rent->id }}" data-status="terbayar" id="cancelKirim" style="display:{{ $rent->status == 'dikirim' ? 'block' : 'none' }}">
+            <i class="fas ss" id="iconStatus"></i> Cancel Kirim
+        </button>
         {{-- Button telah dikembalikan atau belum --}}
         @if(strtolower($rent->status) == 'dikembalikan')
-        <button class="btn btn-success float-right change-status" data-id="{{ $rent->id }}" data-status="terbayar">
+        <button class="btn btn-success float-right change-status" data-id="{{ $rent->id }}" data-status="dikirim">
           <i class="fas fa-check" id="iconStatus"></i> Telah Dikembalikan
         </button>
         @elseif(strtolower($rent->status) == 'terbayar')
-        <button class="btn btn-danger float-right change-status" data-id="{{ $rent->id }}" data-status="dikembalikan">
-          <i class="fas fa-times" id="iconStatus"></i> Belum Dikembalikan
+        <button class="btn btn-warning float-right change-status" data-id="{{ $rent->id }}" data-status="dikirim">
+          <i class="fas fa-truck-fast" id="iconStatus"></i> Mengirim Barang
         </button>
+        @elseif(strtolower($rent->status) == 'dikirim')
+
+        <button class="btn btn-secondary float-right change-status" data-id="{{ $rent->id }}" data-status="dikembalikan">
+            <i class="fas fa-share-from-square" id="iconStatus"></i> Dikembalikan
+        </button>
+        {{-- button cancel kirim --}}
         @endif
+
         <div id="status-message-{{ $rent->id }}" class="status-message"></div> <!-- Tempat untuk menampilkan pesan -->
       </div>
       <div class="card-body">
@@ -190,65 +200,149 @@
 @endsection
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const buttons = document.querySelectorAll('.change-status');
+  // JavaScript untuk menangani tombol status sewa
 
-    buttons.forEach(button => {
-      button.addEventListener('click', async (e) => {
-        const rentId = button.dataset.id;
-        const newStatus = button.dataset.status;
-        const iconStatus = document.getElementById('iconStatus');
-        const status = document.getElementById('status');
+document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll('.change-status');
+    const buttonCancelKirim = document.getElementById('cancelKirim');
+
+    buttonCancelKirim.addEventListener('click', async ()=>{
+        const rentId = buttonCancelKirim.dataset.id;
+        const newStatus = 'terbayar';
+        const statusElement = document.getElementById('status');
+        const statusMessage = document.getElementById(`status-message-${rentId}`);
 
         try {
-          const response = await fetch(`/transaksi/sewa/${rentId}/status/${newStatus}`, {
-            method: 'POST'
-            , headers: {
-              'Content-Type': 'application/json'
-              , 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-            , body: JSON.stringify({
-              status: newStatus
-            })
-          });
+            // Kirim permintaan ke server untuk memperbarui status
+            const response = await fetch(`/transaksi/sewa/${rentId}/status/${newStatus}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ status: newStatus })
+            });
 
-          const result = await response.json();
+            const result = await response.json();
 
-          if (response.ok) {
-            // Update button or status message
-            const statusMessage = document.getElementById(`status-message-${rentId}`);
-            statusMessage.textContent = `Status berhasil diperbarui menjadi ${newStatus}`;
-            statusMessage.classList.add('show'); // Tampilkan dengan animasi
+            if (response.ok) {
+                // Perbarui pesan status
+                statusMessage.textContent = `Status berhasil diperbarui menjadi ${newStatus}`;
+                statusMessage.classList.add('show');
 
-            // Sembunyikan pesan setelah 3 detik
-            setTimeout(() => {
-              statusMessage.classList.remove('show'); // Mulai sembunyikan
-              setTimeout(() => {}, 500); // Waktu ini harus sama dengan durasi animasi CSS
-            }, 1000);
+                setTimeout(() => {
+                    statusMessage.classList.remove('show');
+                }, 3000);
 
-            // Optional: Update button UI dynamically
-            if (newStatus === 'dikembalikan') {
-              button.innerHTML = '<i class="fas fa-check"></i> Telah Dikembalikan';
-              button.classList.remove('btn-danger');
-              button.classList.add('btn-success');
-              button.dataset.status = 'terbayar';
-              status.textContent = ': Dikembalikan';
+                // Perbarui UI tombol berdasarkan status baru
+                // mendapatkan button change sekarang
+                const button = document.querySelector(`.change-status`);
 
+                updateButtonUI(button, newStatus);
+                updateCancelKirimVisibility(newStatus);
+
+                // Perbarui teks status di elemen
+                if (statusElement) {
+                    statusElement.textContent = `: ${capitalizeFirstLetter(newStatus)}`;
+                }
             } else {
-              button.innerHTML = '<i class="fas fa-times"></i> Belum Dikembalikan';
-              button.classList.remove('btn-success');
-              button.classList.add('btn-danger');
-              button.dataset.status = 'dikembalikan';
-              status.textContent = ': Terbayar';
+                throw new Error(result.message || 'Terjadi kesalahan');
             }
-          } else {
-            throw new Error(result.message || 'Terjadi kesalahan');
-          }
         } catch (error) {
-          alert('Gagal memperbarui status: ' + error.message);
+            alert(`Gagal memperbarui status: ${error.message}`);
         }
-      });
+    })
+
+    buttons.forEach(button => {
+        button.addEventListener('click', async () => {
+            const rentId = button.dataset.id;
+            const newStatus = button.dataset.status;
+            const statusElement = document.getElementById('status');
+            const statusMessage = document.getElementById(`status-message-${rentId}`);
+
+            try {
+                // Kirim permintaan ke server untuk memperbarui status
+                const response = await fetch(`/transaksi/sewa/${rentId}/status/${newStatus}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Perbarui pesan status
+                    statusMessage.textContent = `Status berhasil diperbarui menjadi ${newStatus}`;
+                    statusMessage.classList.add('show');
+
+                    setTimeout(() => {
+                        statusMessage.classList.remove('show');
+                    }, 3000);
+
+                    // Perbarui UI tombol berdasarkan status baru
+                    updateButtonUI(button, newStatus);
+                    updateCancelKirimVisibility(newStatus);
+
+                    // Perbarui teks status di elemen
+                    if (statusElement) {
+                        statusElement.textContent = `: ${capitalizeFirstLetter(newStatus)}`;
+                    }
+                } else {
+                    throw new Error(result.message || 'Terjadi kesalahan');
+                }
+            } catch (error) {
+                alert(`Gagal memperbarui status: ${error.message}`);
+            }
+        });
     });
-  });
+
+    // Fungsi untuk memperbarui visibilitas tombol cancel kirim
+    function updateCancelKirimVisibility(status) {
+        if (buttonCancelKirim) {
+            buttonCancelKirim.style.display = (status === 'dikirim') ? 'block' : 'none';
+        }
+    }
+
+    function capitalizeFirstLetter(val){
+        return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+    }
+
+    // Fungsi untuk memperbarui tampilan tombol berdasarkan status baru
+    function updateButtonUI(button, status) {
+        updateCancelKirimVisibility(status);
+        switch (status) {
+            case 'terbayar':
+                button.innerHTML = '<i class="fas fa-truck-fast"></i> Mengirim Barang';
+                button.classList.remove('btn-success', 'btn-secondary');
+                button.classList.add('btn-warning');
+                button.dataset.status = 'dikirim';
+                break;
+
+            case 'dikirim':
+                buttonCancelKirim.style.display = 'block';
+                button.innerHTML = '<i class="fas fa-share-from-square"></i> Dikembalikan';
+                button.classList.remove('btn-warning', 'btn-success');
+                button.classList.add('btn-secondary');
+                button.dataset.status = 'dikembalikan';
+                break;
+
+            case 'dikembalikan':
+                button.innerHTML = '<i class="fas fa-check"></i> Telah Dikembalikan';
+                button.classList.remove('btn-secondary', 'btn-warning');
+                button.classList.add('btn-success');
+                button.dataset.status = 'dikirim';
+                break;
+        }
+    }
+
+    // Atur visibilitas awal tombol cancel kirim berdasarkan status
+    if (buttonCancelKirim) {
+        updateCancelKirimVisibility(button.dataset.status);
+    }
+});
+
 
 </script>

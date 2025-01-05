@@ -152,13 +152,15 @@ Buka 2 Terminal, (untuk client dan admin).
    - [x] Observer Pemantauan Jumlah Harga Keranjang
 
 **admin**
-- [x] Manajemen barang
-- [x] Dashboard informasi Penyewaan dan Penjualan
+- [ ] Manajemen barang
+   - [ ] Bug tidak mau update
+- [ ] Dashboard informasi Penyewaan dan Penjualan
    - [x] Halaman dan Fitur
    - [x] Menampilkan KTP di penyewaan
    - [x] Halaman Detail Pembayaran
    - [X] Fix Stok Barang dan Harga Total
    - [x] Tambahkan lokasi pengambilan barang (jual/sewa)
+   - [ ] Membuat Tombol Dikirim
 - [x] Manajemen User
 - [x] Dashboard Admin
    - [x] Pantauan Stok Barang

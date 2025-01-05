@@ -29,10 +29,12 @@ class PaymentController extends Controller
         // User
         $user = Auth::user();
         // Buat transaksi
+
+
         $params = [
             'transaction_details' => [
                 'order_id' => rand(),
-                'gross_amount' => $amount,
+                'gross_amount' => $amount + $request->ongkir,
                 'tipeTransaksi' => $tipeTransaksi,
             ],
             'customer_details' => [
@@ -40,12 +42,14 @@ class PaymentController extends Controller
                 'last_name' => '',
                 'email' => $user->email,
                 'phone' => $user->no_hp,
+                'alamat' => $user->alamat,
+                'shiipting_address' => $request->lokasi_pengambilan,
             ],
         ];
-
+        $item_details = array();
         $barangTidakCukup = collect();
         try {
-            $snapToken = Snap::getSnapToken($params);
+
             if($tipeTransaksi == 'sewa'){
 
                 $rent = Rent::where('id', $request->rent_id)->first();
@@ -63,6 +67,15 @@ class PaymentController extends Controller
                     throw new \Exception('Stok barang tidak mencukupi');
                 }
 
+                foreach($rent->details as $detail){
+                    $item_details[] = [
+                        'id' => $detail->barang->id,
+                        'price' => $detail->barang->harga,
+                        'quantity' => $detail->stok_barang,
+                        'name' => $detail->barang->nama,
+                    ];
+                }
+
             }else{
                 $jual = Jual::where('id', $request->rent_id)->first();
 
@@ -74,7 +87,24 @@ class PaymentController extends Controller
                     ]);
                     throw new \Exception('Stok barang tidak mencukupi');
                 }
+
+               $item_details[] = [
+                    'id' => $jual->barang->id,
+                    'price' => $jual->barang->harga,
+                    'quantity' => $jual->stok_barang,
+                    'name' => $jual->barang->nama,
+                ];
             }
+
+            $item_details[] = [
+                'id' => 'ongkir',
+                'price' => $request->ongkir,
+                'quantity' => 1,
+                'name' => 'Ongkir : ' . $request->lokasi_pengambilan,
+            ];
+
+            $params['item_details'] = $item_details;
+            $snapToken = Snap::getSnapToken($params);
 
             return response()->json(['snap_token' => $snapToken]);
         } catch (\Exception $e) {
@@ -124,7 +154,7 @@ class PaymentController extends Controller
                 $jual->snap_token = $request->snap_token;
                 $jual->ongkir = $request->ongkir;
                 $jual->lokasi_pengambilan = $request->lokasi_pengambilan;
-                
+
                 $jual->save();
                 $jual->barang->stok_barang -= $jual->stok_barang;
                 $jual->barang->save();

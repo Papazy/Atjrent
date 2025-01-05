@@ -187,16 +187,13 @@
   </div>
 </div>
 
-
 <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
-
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+
     // JavaScript to toggle visibility of kabupaten dropdown
     document.addEventListener('DOMContentLoaded', function() {
-
 
         // Handle change total price
         let lokasi_pengambilan = "Basecamp Atjeh Camping";

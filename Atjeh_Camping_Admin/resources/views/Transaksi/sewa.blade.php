@@ -53,13 +53,15 @@
 
                             <td>
                                 @if($data->status == 'pending' && $data->tanggal_mulai >=  \Carbon\Carbon::now())
-                                <button class="btn btn-warning me-2">Pending</button>
+                                <button class="btn btn-secondary me-2">Pending</button>
                                 @elseif($data->status == 'pending' && $data->tanggal_mulai < \Carbon\Carbon::now())
                                 <button class="btn btn-danger me-2">Kedaluwarsa</button>
                                 @elseif($data->status == 'terbayar')
                                 <button class="btn btn-success me-2">Dibayar</button>
                                 @elseif($data->status == 'dikembalikan')
-                                <button class="btn btn-secondary me-2" style="font-size:14px">Dikembalikan</button>
+                                <button class="btn btn-info me-2" style="font-size:14px">Dikembalikan</button>
+                                @elseif($data->status == 'dikirim')
+                                <button class="btn btn-warning me-2" style="font-size:14px">Dikirim</button>
                                 @else
                                 <button class="btn btn-warning me-2">Pending</button>
                                 @endif

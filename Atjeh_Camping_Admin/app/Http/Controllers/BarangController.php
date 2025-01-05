@@ -20,18 +20,18 @@ class BarangController extends Controller
     return view('masterdata.barang');
    }
 
-  
+
    public function post_store(Request $request){
       $validator = Validator::make($request->all(), [
-        'nama' => 'required', 
+        'nama' => 'required',
         'deskripsi' => 'required',
-        'harga' => 'required', 
-        'stok_barang' => 'required', 
-        'image_url' => 'required', 
+        'harga' => 'required',
+        'stok_barang' => 'required',
+        'image_url' => 'required',
         'merk' => 'required',
         'kategori' => 'required',
         'is_jual' => 'required',
-          
+
       ]);
 
       if ($validator->fails()) {
@@ -59,7 +59,7 @@ class BarangController extends Controller
             'text' => 'Data Berhasil Disimpan!',
             'data'    => ''
         ]);
-  
+
      }
 
 
@@ -72,7 +72,7 @@ class BarangController extends Controller
         return DataTables::of($data)
             ->addColumn('image_url', function ($data) {
                 return '<img src="'.url('/uploads/'.$data->image_url).'" style="width:150px">';
-                
+
                 // return $data->image_url ?? '-'; // Pastikan properti ada
             })
             ->addColumn('nama', function ($data) {
@@ -112,19 +112,19 @@ class BarangController extends Controller
 function show($barang_id)  {
     $barang = Barang::find($barang_id);
     return response()->json(['barang'=>$barang]);
-    
+
 }
 function update($barang_id,Request $request)   {
 
-    
+
     $validator = Validator::make($request->all(), [
-        'namabarang' => 'required', 
-        'deskripsi_barang' => 'required',
-        'harga' => 'required', 
-        'stok_barang' => 'required',  
+        'nama' => 'required',
+        'deskripsi' => 'required',
+        'harga' => 'required',
+        'stok_barang' => 'required',
         'merk' => 'required',
-        'kategori_barang' => 'required',
-          
+        'kategori' => 'required',
+
       ]);
 
       if ($validator->fails()) {
@@ -134,20 +134,20 @@ function update($barang_id,Request $request)   {
       if ($request ->image_url == '' ) {
         $image_url = $request->old_image_url;
       }
-      else{          
+      else{
           $image_url = Str::random(100) . '.' .$request->image_url->getClientOriginalExtension();
           $request->image_url->move(public_path() . '/uploads/', $image_url);
       }
 
 
       Barang::find($barang_id)->update([
-          'namabarang' => $request->namabarang,
-          'deskripsi_barang' => $request->deskripsi_barang,
+          'nama' => $request->nama,
+          'deskripsi' => $request->deskripsi,
           'harga' => $request->harga,
           'stok_barang' => $request->stok_barang,
           'image_url' => $image_url,
           'merk' => $request->merk,
-          'kategori_barang' => $request->kategori_barang,
+          'kategori' => $request->kategori,
      ]);
 
       return response()->json([
@@ -157,7 +157,7 @@ function update($barang_id,Request $request)   {
             'text' => 'Data Berhasil Disimpan!',
             'data'    => ''
         ]);
-    
+
 }
 
 function delete_destroy($users_id)

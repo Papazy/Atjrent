@@ -208,7 +208,7 @@
         </div>
       </div>
     </div>
-    @elseif($rent->status == "terbayar" || $rent->status == "dikembalikan")
+    @elseif($rent->status == "terbayar" || $rent->status == "dikembalikan" || $rent->status == 'dikirim')
     <div class="col-md-4 col-12">
       <div class="card p-4">
         <div class="card-header">{{ $rent->nama_keranjang }}</div>
@@ -250,11 +250,14 @@
     </div>
     {{-- Button terbayar atau terkembalikan --}}
     @if($rent->status == 'terbayar')
-    <button class="btn btn-success float-right change-status" data-id="{{ $rent->id }}" data-status="dikembalikan">
+    <button class="btn btn-success float-right " data-id="{{ $rent->id }}" data-status="dikembalikan">
       <i class="fas fa-check" id="iconStatus"></i> Terbayar </button>
     @elseif($rent->status == 'dikembalikan')
-    <button class="btn btn-secondary float-right change-status" data-id="{{ $rent->id }}" data-status="terbayar">
+    <button class="btn btn-secondary float-right " data-id="{{ $rent->id }}" data-status="terbayar">
         <i class="fas fa-check" id="iconStatus"></i>  Dikembalikan </button>
+    @elseif($rent->status == 'dikirim')
+    <button class="btn btn-warning float-right " data-id="{{ $rent->id }}" data-status="terbayar">
+        <i class="fas fa-truck-fast" id="iconStatus"></i>  Dikirim </button>
     @endif
       </div>
     </div>

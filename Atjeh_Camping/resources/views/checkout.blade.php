@@ -39,7 +39,10 @@
             <button class="btn btn-success me-2">Dibayar</button>
           @elseif($item->status == 'dikembalikan')
           <a href="{{ url('/rent/keranjang-detail/'.$item->id) }}" class="btn btn-edit me-2">Detail</a>
-          <button class="btn btn-success me-2" style="font-size:14px">dikembalikan</button>
+          <button class="btn btn-info me-2" style="font-size:14px; color:white">Dikembalikan</button>
+          @elseif($item->status == 'dikirim')
+            <a href="{{ url('/rent/keranjang-detail/'.$item->id) }}" class="btn btn-edit me-2">Detail</a>
+            <button class="btn btn-warning me-2" style="font-size:14px">Dikirim</button>
           @endif
         </div>
       </div>
