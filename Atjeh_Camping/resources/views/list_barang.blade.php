@@ -403,6 +403,21 @@
                             .then((response) => response.json())
                             .then((dataa) => {console.log(dataa); location.reload()});
                             },
+
+                            // jika gagal berikan alert gagal dan reload halaman
+                            onPending: function(result){
+                                location.reload();
+                            },
+                            onError: function(result){
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Transaksi Gagal',
+                                    text: 'Transaksi anda gagal',
+                                    showConfirmButton: false,
+                                    timer: 3000
+                                });
+                                location.reload();
+                            }
                         });
                     }
                   });

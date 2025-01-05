@@ -30,7 +30,7 @@
         <div class="d-flex align-items-center">
             @if($item->status == 'pending' && $item->tanggal_mulai >=  Carbon::now())
           <a href="{{ url('/rent/keranjang-detail/'.$item->id) }}" class="btn btn-edit me-2">Bayar</a>
-          <button class="btn btn-warning me-2">Pending</button>
+          <button class="btn btn-secondary me-2">Pending</button>
           @elseif($item->status == 'pending' && $item->tanggal_mulai < Carbon::now())
           <a href="{{ url('/rent/keranjang-detail/'.$item->id) }}" class="btn btn-edit me-2">Detail</a>
           <button class="btn btn-danger me-2">kedaluwarsa</button>
