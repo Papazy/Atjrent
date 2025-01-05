@@ -382,7 +382,7 @@
               <!-- Merk dan Tombol -->
               <div class="d-flex justify-content-between px-3 mb-2">
                 <p class="text-warning small my-0">{{ $item->merk }}</p>
-                <a href="{{ url('/checkout', ['id' => $item->id]) }}" class="btn btn-warning btn-sm">Rent</a>
+                <a href="/rent?q={{$item->nama}}" class="btn btn-warning btn-sm">Rent</a>
               </div>
             </div>
           </div>
@@ -416,7 +416,7 @@
               <!-- Merk dan Tombol -->
               <div class="d-flex justify-content-between px-3 mb-2">
                 <p class="text-warning small my-0">{{ $item->merk }}</p>
-                <a href="{{ url('/checkout', ['id' => $item->id]) }}" class="btn btn-warning btn-sm">Rent</a>
+                <a href="/sale?q={{ $item->nama }}" class="btn btn-warning btn-sm">Rent</a>
               </div>
             </div>
           </div>
