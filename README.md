@@ -154,7 +154,7 @@ Buka 2 Terminal, (untuk client dan admin).
 **admin**
 - [x] Manajemen barang
    - [x] Bug tidak mau update
-- [ ] Dashboard informasi Penyewaan dan Penjualan
+- [x] Dashboard informasi Penyewaan dan Penjualan
    - [x] Halaman dan Fitur
    - [x] Menampilkan KTP di penyewaan
    - [x] Halaman Detail Pembayaran
