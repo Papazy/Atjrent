@@ -176,15 +176,10 @@ class JualController extends Controller
         }
     }
 
-    public function history(){
-        $items = Jual::where('users_id', Auth::user()->id)->where('status', 'terbayar')->latest()->get();
-        return view('riwayat', compact('items'));
-    }
-
-
-
-
-
+        public function history(){
+            $items = Jual::where('users_id', Auth::user()->id)->where('status', 'terbayar')->latest()->get();
+            return view('riwayat', compact('items'));
+        }
 
 }
 
