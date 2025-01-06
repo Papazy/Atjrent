@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Rent;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -20,8 +21,8 @@ class SewaController extends Controller
     $query = Rent::with('user');
 
     // Default waktu mulai dan akhir
-    $waktu_mulai = Rent::min('created_at');
-    $waktu_akhir = Rent::max('created_at');
+    $waktu_mulai = Rent::min('tanggal_mulai');
+    $waktu_akhir = Rent::max('tanggal_mulai');
     $paid_only = 'off';
 
     // Filter berdasarkan waktu
@@ -30,9 +31,15 @@ class SewaController extends Controller
             'waktu_mulai' => 'required|date',
             'waktu_akhir' => 'required|date|after_or_equal:waktu_mulai',
         ]);
-        $query->whereBetween('created_at', [$request->waktu_mulai, $request->waktu_akhir]);
-        $waktu_mulai = $request->waktu_mulai;
-        $waktu_akhir = $request->waktu_akhir;
+
+        // Pastikan waktu lengkap untuk rentang
+        $start_date = Carbon::parse($request->waktu_mulai)->startOfDay(); // 00:00:00
+        $end_date = Carbon::parse($request->waktu_akhir)->endOfDay();     // 23:59:59
+
+        $query->whereBetween('tanggal_mulai', [$start_date, $end_date]);
+
+        $waktu_mulai = $start_date->toDateString();
+        $waktu_akhir = $end_date->toDateString();
     }
 
     // Filter hanya transaksi yang selesai (Terbayar, Dikirim, Dikembalikan)
