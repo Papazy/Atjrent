@@ -1,7 +1,10 @@
 @extends('layouts.admin')
 @push('css')
 <!-- Custom styles for this page -->
-<link href="{{ url('') }}/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/2.2.0/js/dataTables.bootstrap5.js" rel="stylesheet">
+<!-- <link href="https://cdn.datatables.net/2.2.0/css/dataTables.dataTables.css" rel="stylesheet"> -->
+<link href="https://cdn.datatables.net/buttons/3.2.0/css/buttons.dataTables.css" rel="stylesheet">
+
 <style>
     #btn-filter {
         background-color: #f8f9fc;
@@ -198,7 +201,56 @@
 
 
 
-@endsection @push('scripts')
+@endsection
+ @push('scripts')
+
+
+<!-- Page level plugins -->
+
+<!-- https://code.jquery.com/jquery-3.7.1.js -->
+
+
+<!-- Page level plugins -->
+
+<!-- https://cdn.datatables.net/2.2.0/js/jquery.dataTables.min.js -->
+<!-- https://cdn.datatables.net/2.2.0/js/dataTables.bootstrap5.min.js -->
+
+<!-- https://cdn.datatables.net/buttons/3.2.0/js/dataTables.buttons.min.js -->
+<!-- https://cdn.datatables.net/buttons/3.2.0/js/buttons.print.min.js -->
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.datatables.net/2.2.0/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/2.2.0/js/dataTables.bootstrap5.min.js"></script>
+
+<script src="https://cdn.datatables.net/buttons/3.2.0/js/dataTables.buttons.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.2.0/js/buttons.dataTables.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.2.0/js/buttons.print.min.js"></script>
+
+<!-- datatableWithPrint -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        $('#dataTableWithPrint').DataTable({
+            dom: 'Bfrtip', // Menambahkan tombol di atas tabel
+            searching: false,
+            buttons: [
+                {
+                    extend: 'print',
+                    customize: function(win) {
+                        // Menampilkan tanggal mulai dan selesai saat cetak
+                        $(win.document.body).prepend('<h4 class="text-center">{{ $waktu_mulai ? \Carbon\Carbon::parse($waktu_mulai)->format("d M Y") : "Semua Waktu" }} - {{ $waktu_akhir ? \Carbon\Carbon::parse($waktu_akhir)->format("d M Y") : "Semua Waktu" }}</h4>');
+                        $(win.document.body).prepend('<h1 class="text-center">Daftar Transaksi Penjualan</h1>');
+                        $(win.document.body).prepend('<h1 class="text-center"><strong>Atjeh Camping</strong></h1>');
+                    },
+                    exportOptions: {
+                        columns: [0, 1, 2, 3,4]
+                    },
+                    title:'',
+                    footer: false,
+                }
+            ]
+        });
+    });
+</script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -245,19 +297,4 @@
         @endif
     });
 </script>
-
-<!-- Page level plugins -->
-<script src="{{ url('') }}/vendor/datatables/jquery.dataTables.min.js"></script>
-<script src="{{ url('') }}/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-<!-- datatableWithPrint -->
-<script>
-    $(document).ready(function() {
-        $('#dataTableWithPrint').DataTable({
-            "order": [],
-            dom: 'Bfrtip',
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
-            ]
-        });
-    });
-</script>
+@endpush
