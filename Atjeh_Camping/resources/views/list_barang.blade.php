@@ -3,6 +3,9 @@
 <link rel="stylesheet" href="{{ asset('asset/style.css') }}">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
+@php
+    use Carbon\Carbon;
+@endphp
 
 
 <div class="container mt-5">
@@ -40,7 +43,9 @@
               <th>UNIT PRICE</th>
               <th>UNIT</th>
               <th>TOTAL</th>
+              @if($rent->status == 'pending' && $rent->tanggal_mulai >= Carbon::now())
               <th>REMOVE</th>
+              @endif
             </tr>
           </thead>
           <tbody>
@@ -58,10 +63,11 @@
               <td>{{ $item->stok_barang }}</td>
               <td>Rp{{ number_format($item->barang->harga * $item->stok_barang, 0, ",", ".") }}</td>
               <td>
+                @if($rent->status == 'pending' && $rent->tanggal_mulai >= Carbon::now())
                 <button class="btn btn-link text-danger p-0 btn-delete" id="btn-delete" data-id="{{ $item->id }}" onclick="handleDelete(this)">
                   <i class="fas fa-trash" style="color: #ff3d3d"></i>
                 </button>
-
+                @endif
               </td>
             </tr>
             @endforeach
@@ -71,7 +77,7 @@
     </div>
 
     @php
-    use Carbon\Carbon;
+
 
     // Mendapatkan selisih hari dari $item->tanggal_mulai dan $item->tanggal_selesai
     $totalHari = Carbon::parse($tanggal_mulai)->diffInDays(Carbon::parse($tanggal_selesai)); // Tambahkan 1 jika ingin inklusif (termasuk tanggal mulai dan selesai));

@@ -54,7 +54,8 @@ class RegisterController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'alamat' => ['required', 'string', 'max:255'],
-            'no_hp' => ['required', 'string', 'max:13'],
+            // set no_hp only number
+            'no_hp' => ['required', 'string', 'max:13', 'regex:/^([0-9\s\-\+\(\)]*)$/'],
         ]);
     }
 
